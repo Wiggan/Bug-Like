@@ -13,9 +13,9 @@ var game = undefined;
 var canvas = document.getElementById('mycanvas');
 canvas.width = width;
 canvas.height = height;
-
-
-
+var effectcanvas = document.getElementById('effectcanvas');
+effectcanvas.width = width;
+effectcanvas.height = height;
 
 async function generate() {
     player_sprite = await generateMirroredPattern(126, object_size, 'Navy');
@@ -27,8 +27,14 @@ async function generate() {
     ants_sprite = await generateMirroredPattern(463, object_size, object_size, 'Black');
     spider_sprite = await generateMirroredPattern(101, object_size, 'Black');
     centepede_sprite = await generateMirroredPattern(103, object_size, 'Black');
+    effect_sprites = [
+        await generateDoubleMirroredPattern(15, 40, 'Crimson'),
+        await generateDoubleMirroredPattern(60, 40, 'Crimson'),
+        await generateDoubleMirroredPattern(2, 40, 'Crimson'),
+        await generateDoubleMirroredPattern(22, 40, 'Crimson'),
+        await generateDoubleMirroredPattern(60, 40, 'Crimson')
+    ];
 }
-
 
 async function drawStart() {
     var random = mulberry32(0);
@@ -53,9 +59,7 @@ function drawRunning() {
     ctx.translate(width / 2, height / 2);
     ctx.save();
     ctx.translate(-(game.current_room.x + 0.5) * room_size, -(game.current_room.y + 0.5) * room_size);
-/*     game.rooms.forEach((room) => {
-        room.draw(ctx);
-    })  */
+
     game.current_room.draw(ctx);
     game.current_room.n.draw(ctx);
     game.current_room.ne.draw(ctx);
@@ -138,7 +142,7 @@ function update() {
         game.player.x = (game.player.x + 9) % 9;
         game.player.y = (game.player.y + 9) % 9;
     }
-    //console.log("x: " + player.x + ", y: " + player.y);
+    
     var ctx = game.current_room.trail.getContext("2d");
     ctx.fillStyle = 'SaddleBrown';
     ctx.fillRect((game.player.x) * game.player.size, (game.player.y) * game.player.size, game.player.size, game.player.size);
@@ -152,7 +156,5 @@ function update() {
 
     if (game.player.health <= 0) {
         state = StateEnum.End;
-        drawEnd();
-        console.log('died');
     }
 }

@@ -102,6 +102,8 @@ class Actor extends Object {
     takeDamage(amount) {
         this.health -= amount;
         this.show_health = true;
+        // compensate for half effect size and one square of neighrbor rooms being drawn, bah
+        this.effect = new Effect(this.x*object_size + 80, this.y*object_size + 80);
     }
 
     draw(ctx) { 
@@ -132,7 +134,7 @@ class Actor extends Object {
 
 class Player extends Actor {
     constructor() {
-        super(player_sprite, 4, 4, "You: Lucanus Cervus", 1);
+        super(player_sprite, 4, 4, "You: Lucanus Cervus", 20);
         this.damage = 10;
         this.range = 1;
         this.initiative = 10;

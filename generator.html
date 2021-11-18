@@ -7,7 +7,8 @@
    </head>
    
    <body id = "test">
-      <canvas id = "mycanvas"></canvas>
+      <canvas id = "mycanvas"></canvas>  
+      <script type="text/javascript" src="constants.js"></script>
       <script type="text/javascript" src="generator.js"></script>
       <script type = "text/javascript">
          testDistribution();
@@ -23,7 +24,7 @@
             for (x = 0; x < 10; x++) {
                for (y = 0; y < 10; y++) {
                   var s = seed*100 + x * 10 + y;
-                  var monster = await generateDoubleMirroredPattern(s, object_size);
+                  var monster = await generateDoubleMirroredPattern(s, 40);
                   //var monster = await generateMirroredPattern(s, object_size);
                   //var monster = await generatePattern(s, object_size, object_size);
                   ctx.drawImage(monster, x * (object_size + 10), y * (object_size + 10));

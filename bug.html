@@ -4,12 +4,19 @@
 
 <head>
    <meta charset="utf-8">
+   <link rel="stylesheet" href="bug.css"/>
 </head>
 
 <body id="test">
-   <canvas id="mycanvas"></canvas>
+   
+   <div id="stack">
+      <canvas id="mycanvas"></canvas>
+      <canvas id="effectcanvas"></canvas>
+  <div>
+  
    <script type="text/javascript" src="constants.js"></script>
    <script type="text/javascript" src="generator.js"></script>
+   <script type="text/javascript" src="effect.js"></script>
    <script type="text/javascript" src="objects.js"></script>
    <script type="text/javascript" src="room.js"></script>
    <script type="text/javascript" src="game.js"></script>
@@ -25,8 +32,10 @@
       };
       draw();
       
-      window.addEventListener('keypress', (e) => {
+      window.addEventListener('click', (e) => { 
+         new Effect(e.pageX, e.pageY);
       });
+      
       window.addEventListener('keydown', (e) => { 
          if (state == StateEnum.Running && e.keyCode == KeyEnum.info) {
             showInfo = true;
