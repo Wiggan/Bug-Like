@@ -8,6 +8,11 @@
 
 <body id="test">
    <canvas id="mycanvas"></canvas>
+   <script type="text/javascript" src="constants.js"></script>
+   <script type="text/javascript" src="generator.js"></script>
+   <script type="text/javascript" src="objects.js"></script>
+   <script type="text/javascript" src="room.js"></script>
+   <script type="text/javascript" src="game.js"></script>
    <script type="text/javascript" src="bug.js"></script>
    <script type="text/javascript">
 
@@ -18,13 +23,25 @@
          right: 39,
          info: 18
       };
-      drawStart();
-
-      window.addEventListener('keydown', async (e) => {
+      draw();
+      
+      window.addEventListener('keypress', (e) => {
+      });
+      window.addEventListener('keydown', (e) => { 
+         if (state == StateEnum.Running && e.keyCode == KeyEnum.info) {
+            showInfo = true;
+            e.preventDefault();
+            draw();
+         }
+      });
+      
+      window.addEventListener('keyup', async (e) => {
          if (state == StateEnum.Beginning) {
-            generate().then(() => {
+            generate().then(async () => {
                console.log("Generated!");
-               state = StateEnum.Running;
+               game = new Game;
+               await game.build();
+               state = StateEnum.Running;   
                draw();
             });
          } else if (state == StateEnum.Running) {
@@ -56,18 +73,11 @@
                   draw();
                }
                e.preventDefault();
-            } else if (e.keyCode == KeyEnum.info) {
-               showInfo = true;
-               e.preventDefault();
-               draw();
             }
          } else if (state == StateEnum.End) {
-            game = new Game;
             state = StateEnum.Beginning;
             draw();
          }
-      });
-      window.addEventListener('keyup', async (e) => {
          if (e.keyCode == KeyEnum.info) {
             showInfo = false;
             e.preventDefault();

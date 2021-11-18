@@ -8,8 +8,9 @@
    
    <body id = "test">
       <canvas id = "mycanvas"></canvas>
-      <script type="text/javascript" src="bug.js"></script>
+      <script type="text/javascript" src="generator.js"></script>
       <script type = "text/javascript">
+         testDistribution();
          var seed = 0;
          async function drawMonster(seed) {
             var canvas = document.getElementById('mycanvas');
