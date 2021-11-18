@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+
+<html>
+   <head>
+      <meta charset="utf-8">
+    
+   </head>
+   
+   <body id = "test">
+      <canvas id = "mycanvas"></canvas>
+      <script type="text/javascript" src="bug.js"></script>
+      <script type = "text/javascript">
+         var seed = 0;
+         async function drawMonster(seed) {
+            var canvas = document.getElementById('mycanvas');
+            canvas.width = 1000;
+            canvas.height = 1000;
+            var ctx = canvas.getContext('2d');
+            console.log("seed: " + seed);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "red";
+            for (x = 0; x < 10; x++) {
+               for (y = 0; y < 10; y++) {
+                  var s = seed*100 + x * 10 + y;
+                  var monster = await generateDoubleMirroredPattern(s, object_size);
+                  //var monster = await generateMirroredPattern(s, object_size);
+                  //var monster = await generatePattern(s, object_size, object_size);
+                  ctx.drawImage(monster, x * (object_size + 10), y * (object_size + 10));
+                  ctx.fillText("" + s, x * (object_size + 10), y * (object_size + 10) + 10);
+               }
+            }
+         }
+
+         window.addEventListener('keyup', async (e) => {
+            if (e.keyCode == '37') {
+               // left arrow
+               await drawMonster(--seed);
+            }
+            else if (e.keyCode == '39') {
+               // right arrow
+               await drawMonster(++seed);
+            }
+         });
+         drawMonster(seed);
+      </script>
+   </body>
+	
+</html>

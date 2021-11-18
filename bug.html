@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+   <meta charset="utf-8">
+</head>
+
+<body id="test">
+   <canvas id="mycanvas"></canvas>
+   <script type="text/javascript" src="bug.js"></script>
+   <script type="text/javascript">
+
+      const KeyEnum = {
+         forward: 38,
+         backward: 40,
+         left: 37,
+         right: 39,
+         info: 18
+      };
+      drawStart();
+
+      window.addEventListener('keydown', async (e) => {
+         if (state == StateEnum.Beginning) {
+            generate().then(() => {
+               console.log("Generated!");
+               state = StateEnum.Running;
+               draw();
+            });
+         } else if (state == StateEnum.Running) {
+            if (e.keyCode == KeyEnum.forward) {
+               if (isMoveValid(game.player.x, game.player.y - 1)) {
+                  game.player.y--;
+                  update();
+                  draw();
+               }
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.backward) {
+               if (isMoveValid(game.player.x, game.player.y + 1)) {
+                  game.player.y++;
+                  update();
+                  draw();
+               }
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.left) {
+               if (isMoveValid(game.player.x - 1, game.player.y)) {
+                  game.player.x--;
+                  update();
+                  draw();
+               }
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.right) {
+               if (isMoveValid(game.player.x + 1, game.player.y)) {
+                  game.player.x++;
+                  update();
+                  draw();
+               }
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.info) {
+               showInfo = true;
+               e.preventDefault();
+               draw();
+            }
+         } else if (state == StateEnum.End) {
+            game = new Game;
+            state = StateEnum.Beginning;
+            draw();
+         }
+      });
+      window.addEventListener('keyup', async (e) => {
+         if (e.keyCode == KeyEnum.info) {
+            showInfo = false;
+            e.preventDefault();
+            draw();
+         }
+      });
+
+
+   </script>
+
+
+</body>
+
+</html>
