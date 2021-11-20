@@ -18,21 +18,29 @@ effectcanvas.width = width;
 effectcanvas.height = height;
 
 async function generate() {
-    player_sprite = await generateMirroredPattern(126, object_size, 'Navy');
-    obstacle_sprite = await generatePattern(1957, object_size, object_size, 'Grey');
-    hp_sprite = await generateDoubleMirroredPattern(1940, object_size, 'Crimson');
-    max_hp_sprite = await generateDoubleMirroredPattern(2566, object_size, 'Crimson');
-    dmg_sprite = await generateMirroredPattern(1742, object_size, 'Gold');
-    range_sprite = await generateMirroredPattern(605, object_size, 'Gold');
-    ants_sprite = await generateMirroredPattern(463, object_size, object_size, 'Black');
-    spider_sprite = await generateMirroredPattern(101, object_size, 'Black');
-    centepede_sprite = await generateMirroredPattern(103, object_size, 'Black');
+    player_sprite = await generateMirroredPattern(126, tile_size, 'Navy');
+    obstacle_sprite = await generatePattern(1957, tile_size, tile_size, 'Grey');
+    hp_sprite = await generateDoubleMirroredPattern(1940, tile_size, 'Crimson');
+    experience_sprite = await generateDoubleMirroredPattern(192, tile_size, 'Gold');
+    experience_big_sprite = await generateDoubleMirroredPattern(194, tile_size, 'Gold');
+    max_hp_sprite = await generateDoubleMirroredPattern(2566, tile_size, 'Gold');
+    dmg_sprite = await generateMirroredPattern(1742, tile_size, 'Gold');
+    range_sprite = await generateMirroredPattern(605, tile_size, 'Gold');
+    initiative_sprite = await generateMirroredPattern(1090, tile_size, 'Gold');
+    ants_sprite = await generateMirroredPattern(463, tile_size, tile_size, 'Black');
+    spider_sprite = await generateMirroredPattern(101, tile_size, 'Black');
+    centepede_sprite = await generateMirroredPattern(103, tile_size, 'Black');
+    woodlouse_sprite = await generateDoubleMirroredPattern(201, tile_size, 'Black');
+    may_bug_sprite = await generateMirroredPattern(120, tile_size, 'Black');
+    mantis_sprite = await generateMirroredPattern(526, tile_size, 'Black');
+    tic_sprite = await generateMirroredPattern(535, tile_size, 'Black');
+    beetle_sprite = await generateMirroredPattern(589, tile_size, 'Black');
     effect_sprites = [
-        await generateDoubleMirroredPattern(15, 40, 'Crimson'),
-        await generateDoubleMirroredPattern(60, 40, 'Crimson'),
-        await generateDoubleMirroredPattern(2, 40, 'Crimson'),
-        await generateDoubleMirroredPattern(22, 40, 'Crimson'),
-        await generateDoubleMirroredPattern(60, 40, 'Crimson')
+        await generateDoubleMirroredPattern(15, effect_size, 'Crimson'),
+        await generateDoubleMirroredPattern(60, effect_size, 'Crimson'),
+        await generateDoubleMirroredPattern(2, effect_size, 'Crimson'),
+        await generateDoubleMirroredPattern(22, effect_size, 'Crimson'),
+        await generateDoubleMirroredPattern(60, effect_size, 'Crimson')
     ];
 }
 
@@ -58,7 +66,7 @@ function drawRunning() {
     ctx.save();
     ctx.translate(width / 2, height / 2);
     ctx.save();
-    ctx.translate(-(game.current_room.x + 0.5) * room_size, -(game.current_room.y + 0.5) * room_size);
+    ctx.translate(-(game.current_room.x + 0.5) * room_width, -(game.current_room.y + 0.5) * room_height);
 
     game.current_room.draw(ctx);
     game.current_room.n.draw(ctx);
@@ -71,7 +79,7 @@ function drawRunning() {
     game.current_room.nw.draw(ctx);
     ctx.restore();
     ctx.save();
-    ctx.translate(-0.5 * room_size, -0.5 * room_size);
+    ctx.translate(-0.5 * room_width, -0.5 * room_height);
     game.player.draw(ctx);
     ctx.restore();
     ctx.restore();
@@ -106,8 +114,8 @@ function drawEnd() {
 
 function isMoveValid(target_x, target_y) {
     var room = getRoomRelativeCurrentRoom(target_x, target_y);
-    var wrapped_x = (target_x + 9) % 9;
-    var wrapped_y = (target_y + 9) % 9;
+    var wrapped_x = (target_x + room_width_tiles) % room_width_tiles;
+    var wrapped_y = (target_y + room_height_tiles) % room_height_tiles;
     return room.obstacles.every((obstacle) => {
         return obstacle.x != wrapped_x || obstacle.y != wrapped_y
     }) && room.monsters.every((monster) => {
@@ -118,11 +126,11 @@ function isMoveValid(target_x, target_y) {
 function getRoomRelativeCurrentRoom(x, y) {
     if (x < 0) {
         return game.current_room.w;
-    } else if (x >= room_size / object_size) {
+    } else if (x >= room_width_tiles) {
         return game.current_room.e;
     } else if (y < 0) {
         return game.current_room.n;
-    } else if (y >= room_size / object_size) {
+    } else if (y >= room_height_tiles) {
         return game.current_room.s;
     } else {
         return game.current_room;
@@ -139,8 +147,8 @@ function update() {
         }));
         game.current_room = room;
         game.current_room.fill_surrounding();
-        game.player.x = (game.player.x + 9) % 9;
-        game.player.y = (game.player.y + 9) % 9;
+        game.player.x = (game.player.x + room_width_tiles) % room_width_tiles;
+        game.player.y = (game.player.y + room_height_tiles) % room_height_tiles;
     }
     
     var ctx = game.current_room.trail.getContext("2d");

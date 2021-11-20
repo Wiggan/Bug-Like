@@ -7,7 +7,7 @@ class Effect {
         this.y = y;
         this.index = 0;
         this.interval = setInterval(() => {
-            this.ctx.clearRect(this.x, this.y, 40, 40);
+            this.ctx.clearRect(this.x, this.y, effect_size, effect_size);
             if (effect_sprites.length > this.index) {
                 this.ctx.drawImage(effect_sprites[this.index], this.x, this.y);
             } else {

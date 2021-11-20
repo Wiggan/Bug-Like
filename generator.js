@@ -17,7 +17,7 @@ function getRandomColor(random, difficulty) {
 }
 
 function getKumaraswamySample(random, difficulty) {
-    var x = random();
+    var x = random;
     var b = 5 - difficulty * 4.5;
     var a = 0.5 + difficulty * 4;    
     var f = a * b * x ** (a - 1) * (1 - x ** a) ** (b - 1);
@@ -26,6 +26,20 @@ function getKumaraswamySample(random, difficulty) {
 
 function getRandomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
+}
+
+function getUniqueElementsFromArray(array, difficulty) {
+    var result = [];
+    var count = Math.min(Math.floor(2 + difficulty * 4 + Math.random() * 2), array.length);
+    for (var i = 0; i < count; i++) {
+        var candidate = getRandomElementWeighted(array, Math.random(), difficulty);
+        while(result.includes(candidate)) {
+            candidate = getRandomElementWeighted(array, Math.random(), difficulty);
+        }
+        result.push(candidate);
+    }
+    console.log(result);
+    return result;
 }
 
 function getRandomElementWeighted(array, random, difficulty) {

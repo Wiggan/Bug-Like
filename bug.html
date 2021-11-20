@@ -24,6 +24,7 @@
    <script type="text/javascript">
 
       const KeyEnum = {
+         wait: 32,
          forward: 38,
          backward: 40,
          left: 37,
@@ -33,7 +34,9 @@
       draw();
       
       window.addEventListener('click', (e) => { 
-         new Effect(e.pageX, e.pageY);
+         if (state == StateEnum.Running) {
+            new Effect(e.pageX, e.pageY);
+         }
       });
       
       window.addEventListener('keydown', (e) => { 
@@ -81,6 +84,10 @@
                   update();
                   draw();
                }
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.wait) {
+               update();
+               draw();
                e.preventDefault();
             }
          } else if (state == StateEnum.End) {

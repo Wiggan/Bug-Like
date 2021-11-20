@@ -4,7 +4,7 @@ class Object {
     constructor(sprite, x, y, description) {
         this.x = x;
         this.y = y;
-        this.size = object_size;
+        this.size = tile_size;
         this.description = description;
         this.sprite = sprite;
     }
@@ -29,7 +29,7 @@ class Object {
 
     draw(ctx) {
         ctx.save();
-        ctx.translate(this.x * object_size, this.y * object_size);
+        ctx.translate(this.x * tile_size, this.y * tile_size);
         ctx.drawImage(this.sprite, 0, 0);
         if (showInfo) {
             this.drawInfoBox(ctx);
@@ -44,6 +44,7 @@ class Rock extends Object {
     }
 }
 
+
 class Buff extends Object {
     constructor(sprite, x, y, description) {
         super(sprite, x, y, description);
@@ -54,7 +55,7 @@ class HP extends Buff {
     constructor(x, y) {
         super(hp_sprite, x, y, '+20 health');
     }
-
+    
     pickUp() {
         game.player.heal(20);
     }
@@ -64,7 +65,7 @@ class MaxHP extends Buff {
     constructor(x, y) {
         super(max_hp_sprite, x, y, '+20 max health');
     }
-
+    
     pickUp() {
         game.player.max_health += 20;
         game.player.heal(20);
@@ -75,7 +76,7 @@ class DMG extends Buff {
     constructor(x, y) {
         super(dmg_sprite, x, y, '+10 damage');
     }
-
+    
     pickUp() {
         game.player.damage += 10;
     }
@@ -85,44 +86,86 @@ class Range extends Buff {
     constructor(x, y) {
         super(range_sprite, x, y, '+1 range');
     }
-
+    
     pickUp() {
         game.player.range++;
     }
 }
+
+class Initiative extends Buff {
+    constructor(x, y) {
+        super(initiative_sprite, x, y, '+1 initiative');
+    }
+    
+    pickUp() {
+        game.player.initiative++;
+    }
+}
+
+class Experience extends Buff {
+    constructor(x, y) {
+        super(experience_sprite, x, y, '+10 experience');
+    }
+    
+    pickUp() {
+        game.player.experience += 10;
+    }
+}
+
+class ExperienceBig extends Buff {
+    constructor(x, y) {
+        super(experience_sprite, x, y, '+100 experience');
+    }
+    
+    pickUp() {
+        game.player.experience += 100;
+    }
+}
+
+var buffs = [HP, Experience, Initiative, MaxHP, ExperienceBig, DMG, Range];
+
 
 class Actor extends Object {
     constructor(sprite, x, y, description, max_health) {
         super(sprite, x, y, description);
         this.max_health = max_health;
         this.health = max_health;
-        this.show_health = false;
+        this.health_change = 0;
     }
 
     takeDamage(amount) {
         this.health -= amount;
-        this.show_health = true;
+        this.health_change -= amount;
         // compensate for half effect size and one square of neighrbor rooms being drawn, bah
-        this.effect = new Effect(this.x*object_size + 80, this.y*object_size + 80);
+        this.effect = new Effect(this.x*tile_size + 80, this.y*tile_size + 80);
     }
 
     draw(ctx) { 
         Object.prototype.draw.call(this,ctx);
-        if (this.show_health) {
+        if (this.health_change != 0) {
             ctx.save();
-            ctx.translate(this.x * object_size, this.y * object_size);
+            ctx.translate(this.x * tile_size, this.y * tile_size);
             this.drawHealthBar(ctx);
             ctx.restore();
-            this.show_health = false;
+            this.health_change = 0;
         }
     }
 
     drawHealthBar(ctx) {
         ctx.save();
         ctx.fillStyle = "Crimson";
-        ctx.fillRect(0, 0, object_size, 10);
+        ctx.fillRect(0, 0, tile_size, 10);
         ctx.fillStyle = "OliveDrab";
-        ctx.fillRect(0, 0, Math.max(0, object_size * this.health / this.max_health), 10);
+        var health = Math.max(0, tile_size * this.health / this.max_health);
+        var delta = Math.abs(tile_size * this.health_change / this.max_health);
+        ctx.fillRect(0, 0, health, 10);
+        if (this.health_change > 0) {
+            ctx.fillStyle = "YellowGreen";
+            ctx.fillRect(health - delta, 0, delta, 10);
+        } else if (this.health_change < 0) {
+            ctx.fillStyle = "Salmon";
+            ctx.fillRect(health, 0, delta, 10);
+        }
         ctx.restore();
     }
 
@@ -138,11 +181,49 @@ class Player extends Actor {
         this.damage = 10;
         this.range = 1;
         this.initiative = 10;
+        this.level = 1;
+        this.experience = 0;
+        this.level_up_experience = this.getLevelUpExperience(this.level);
+        this.previous_level_up_experience = 0;
     }
     
+    getLevelUpExperience(level) {
+        return 30**((1 + level * 0.2));
+    }
+
     heal(amount) {
-        this.health = Math.min(this.max_health, this.health + amount);
-        this.show_health = true;
+        if (this.health < this.max_health) {
+            amount = Math.min(amount, this.max_health - this.health);
+            this.health = this.health + amount;
+            this.health_change += amount;
+        }
+    }
+
+    gainExperience(amount) {
+        this.experience += amount;
+        if (this.experience >= this.level_up_experience) {
+            console.log("Level up!");
+            this.level++;
+            this.max_health += 10;
+            this.damage += 10;
+            this.health = this.max_health;
+            this.previous_level_up_experience = this.level_up_experience;
+            this.level_up_experience = this.getLevelUpExperience(this.level);
+        }
+    }
+
+    drawExperienceBar(ctx) {
+        ctx.save();
+        ctx.fillStyle = "Black";
+        ctx.fillRect(0, 10, tile_size, 10);
+        ctx.fillStyle = "Grey";
+        ctx.fillRect(0, 10, Math.max(0, tile_size * (this.experience - this.previous_level_up_experience) / (this.level_up_experience - this.previous_level_up_experience)), 10);
+        ctx.restore();
+    }
+
+    drawInfoBox(ctx) {
+        Actor.prototype.drawInfoBox.call(this,ctx);
+        this.drawExperienceBar(ctx);
     }
 }
 
@@ -152,6 +233,7 @@ class Monster extends Actor {
         this.aggro_range = aggro_range;
         this.range = 1;
         this.initiative = 20;
+        this.experience_value = 20;
         this.room = room;
         this.speed = speed;
         this.damage = damage;
@@ -195,6 +277,9 @@ class Monster extends Actor {
         }
         if (distance <= game.player.range) {
             this.takeDamage(game.player.damage);
+            if (this.health <= 0) {
+                game.player.gainExperience(this.experience_value);
+            }
         }
         if (this.initiative <= game.player.initiative) {
             if (this.health > 0 && distance <= this.range) {
@@ -212,7 +297,7 @@ class Ant extends Monster {
 
 class Spider extends Monster {
     constructor(room, x, y) {
-        super(room, spider_sprite, x, y, "Spider", 20, 3, 2, 10);
+        super(room, spider_sprite, x, y, "Spider", 40, 3, 2, 10);
     }
 }
 
@@ -221,4 +306,38 @@ class Centepede extends Monster {
         super(room, centepede_sprite, x, y, "Centepede", 30, 2, 2, 10);
     }
 }
+
+class Woodlouse extends Monster {
+    constructor(room, x, y) {
+        super(room, woodlouse_sprite, x, y, "Woodlouse", 60, 1, 1, 5);
+    }
+}
+
+class MayBug extends Monster {
+    constructor(room, x, y) {
+        super(room, may_bug_sprite, x, y, "May Bug", 40, 2, 2, 10);
+    }
+}
+
+class Mantis extends Monster {
+    constructor(room, x, y) {
+        super(room, mantis_sprite, x, y, "Mantis", 70, 5, 1, 50);
+    }
+}
+
+class Tic extends Monster {
+    constructor(room, x, y) {
+        super(room, tic_sprite, x, y, "Tic", 30, 1, 1, 5);
+    }
+}
+
+class Beetle extends Monster {
+    constructor(room, x, y) {
+        super(room, beetle_sprite, x, y, "Beetle", 60, 3, 1, 10);
+    }
+}
+
+
+var monsters = [Ant, MayBug, Woodlouse, Tic, Spider, Centepede, Beetle, Mantis];
+
 
