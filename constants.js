@@ -8,3 +8,5 @@ const room_width = tile_size * room_width_tiles;
 const room_height = tile_size * room_height_tiles;
 const width = room_width + window_margin;
 const height = room_height + window_margin;
+
+const player_max_range = 3;

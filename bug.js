@@ -16,6 +16,9 @@ canvas.height = height;
 var effectcanvas = document.getElementById('effectcanvas');
 effectcanvas.width = width;
 effectcanvas.height = height;
+var hudcanvas = document.getElementById('hudcanvas');
+hudcanvas.width = width;
+hudcanvas.height = 40;
 
 async function generate() {
     player_sprite = await generateMirroredPattern(126, tile_size, 'Navy');
@@ -57,6 +60,7 @@ async function drawStart() {
     ctx.fillStyle = 'black';
     ctx.font = "20px sans-serif";
     ctx.fillText("Press any key to start...", 50, 50);
+    clearHud();
 }
 
 function drawRunning() {
@@ -83,6 +87,7 @@ function drawRunning() {
     game.player.draw(ctx);
     ctx.restore();
     ctx.restore();
+    drawHud();
 }
 
 function draw() {
@@ -110,6 +115,7 @@ function drawEnd() {
     ctx.font = "20px sans-serif";
     ctx.fillText("You died!", 50, 50);
     ctx.fillText("Score: " + game.score, 50, 150);
+    clearHud();
 }
 
 function isMoveValid(target_x, target_y) {

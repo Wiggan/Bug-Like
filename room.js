@@ -23,13 +23,13 @@ class Room {
         this.obstacles = [];
         this.monsters = [];
         this.buffs = [];
-        for (var x = 1; x < room_width_tiles - 1; x++) {
-            for (var y = 1; y < room_height_tiles - 1; y++) {
-                if (this.random() < this.biome.density) {
+        for (var x = 0; x < room_width_tiles; x++) {
+            for (var y = 0; y < room_height_tiles; y++) {
+                if (this.random() < this.biome.density*0.8) {
                     if (this.random() > 0.5) {
                         this.obstacles.push(new Rock(x, y));
                     } else {
-                        if (this.random()*this.random() < this.biome.difficulty) {
+                        if (this.random()**1.5 < this.biome.difficulty*0.8) {
                             this.monsters.push(new (getRandomElement(this.biome.monsters))(this, x, y));
                         } else {
                             this.buffs.push(new (getRandomElement(this.biome.buffs))(x, y));

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <link rel="stylesheet" href="bug.css"/>
+</head>
+
+<body id="test">
+   
+   <div id="stack">
+      <canvas id="mycanvas"></canvas>
+      <canvas id="effectcanvas"></canvas>
+  <div>
+  
+   <script type="text/javascript" src="constants.js"></script>
+   <script type="text/javascript" src="generator.js"></script>
+   <script type="text/javascript" src="effect.js"></script>
+   <script type="text/javascript" src="objects.js"></script>
+   <script type="text/javascript" src="room.js"></script>
+   <script type="text/javascript" src="game.js"></script>
+   <script type="text/javascript" src="level_generator_tester.js"></script>
+   <script type="text/javascript">
+
+      const KeyEnum = {
+         regenerate: 32,
+         zoomin: 38,
+         zoomout: 40,
+      };
+      
+      window.addEventListener('click', (e) => { 
+         x -= (e.pageX - width/2);// * scale;
+         y -= (e.pageY - width/2);// * scale;
+         draw();
+      });
+      
+      generate().then(createWorld);
+
+      async function createWorld() {
+         console.log("Generated!");
+         game = new Game;
+         await game.build();
+         state = StateEnum.Running;
+         for (var i = 0; i < 10; i++) {
+            game.rooms.forEach((room) => {
+               room.fill_surrounding();
+            })
+         }
+         draw();
+      }
+
+      window.addEventListener('keyup', async (e) => {
+         if (e.keyCode == KeyEnum.zoomin) {
+            scale *= 0.9;
+            x *= 0.9;
+            y *= 0.9;
+            draw();
+            e.preventDefault();
+         } else if (e.keyCode == KeyEnum.zoomout) {
+            scale *= 1.1;
+            x *= 1.1;
+            y *= 1.1;
+            draw();
+            e.preventDefault();
+         } else if (e.keyCode == KeyEnum.regenerate) {
+            await createWorld();
+         }
+      });
+
+
+   </script>
+
+
+</body>
+
+</html>

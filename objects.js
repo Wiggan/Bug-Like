@@ -69,6 +69,7 @@ class MaxHP extends Buff {
     pickUp() {
         game.player.max_health += 20;
         game.player.heal(20);
+        game.score += 10;
     }
 }
 
@@ -79,6 +80,7 @@ class DMG extends Buff {
     
     pickUp() {
         game.player.damage += 10;
+        game.score += 10;
     }
 }
 
@@ -88,7 +90,10 @@ class Range extends Buff {
     }
     
     pickUp() {
-        game.player.range++;
+        if (game.player.range < player_max_range) {
+            game.player.range++;
+        }
+        game.score += 10;
     }
 }
 
@@ -99,6 +104,7 @@ class Initiative extends Buff {
     
     pickUp() {
         game.player.initiative++;
+        game.score += 10;
     }
 }
 
@@ -109,6 +115,7 @@ class Experience extends Buff {
     
     pickUp() {
         game.player.experience += 10;
+        game.score += 10;
     }
 }
 
@@ -119,6 +126,7 @@ class ExperienceBig extends Buff {
     
     pickUp() {
         game.player.experience += 100;
+        game.score += 10;
     }
 }
 
@@ -188,7 +196,7 @@ class Player extends Actor {
     }
     
     getLevelUpExperience(level) {
-        return 30**((1 + level * 0.2));
+        return Math.floor(30**((1 + level * 0.2)));
     }
 
     heal(amount) {
@@ -279,6 +287,7 @@ class Monster extends Actor {
             this.takeDamage(game.player.damage);
             if (this.health <= 0) {
                 game.player.gainExperience(this.experience_value);
+                game.score += 10;
             }
         }
         if (this.initiative <= game.player.initiative) {
