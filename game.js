@@ -14,7 +14,13 @@ class Game {
     async build() {
         this.biomes = await this.generateBiomes(0);
         this.player = new Player();
-        this.rooms.push(new Room(undefined, 0, 0));
+        var first_room = new Room(undefined, 0, 0);
+        first_room.objects.forEach((o, i) => {
+            if (o.distanceToPlayer() == 0) {
+                first_room.obstacles.splice(i, 1);
+            }
+        });
+        this.rooms.push(first_room);
         this.current_room = game.rooms[0];
         this.rooms[0].fill_surrounding();
     }

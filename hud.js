@@ -10,8 +10,11 @@ function drawHud() {
     ctx.fillRect(0, 0, canvas.clientWidth , canvas.clientHeight);
     ctx.strokeRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     var info = "HP: " + game.player.health + "/" + game.player.max_health +
-               " XP: " + game.player.experience + "/" + game.player.level_up_experience +
-               " SCORE: " + game.score;
+               "   Level: " + game.player.level + "(" + game.player.experience + "/" + game.player.level_up_experience + ")" +
+               "   DMG: " + game.player.damage +
+               "   Range: " + game.player.range + 
+               "   Initiative: " + game.player.initiative +
+               "   Score: " + game.score;
     ctx.fillStyle = "black";
     ctx.fillText(info, 10, 25);
 }

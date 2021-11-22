@@ -20,24 +20,25 @@ class Room {
             console.log("using parent biome");
             this.biome = creator.biome;
         }
-        this.obstacles = [];
-        this.monsters = [];
-        this.buffs = [];
+        var obstacles = [];
+        var monsters = [];
+        var buffs = [];
         for (var x = 0; x < room_width_tiles; x++) {
             for (var y = 0; y < room_height_tiles; y++) {
                 if (this.random() < this.biome.density*0.8) {
                     if (this.random() > 0.5) {
-                        this.obstacles.push(new Rock(x, y));
+                        obstacles.push(new Rock(x, y));
                     } else {
                         if (this.random()**1.5 < this.biome.difficulty*0.8) {
-                            this.monsters.push(new (getRandomElement(this.biome.monsters))(this, x, y));
+                            monsters.push(new (getRandomElement(this.biome.monsters))(this, x, y));
                         } else {
-                            this.buffs.push(new (getRandomElement(this.biome.buffs))(x, y));
+                            buffs.push(new (getRandomElement(this.biome.buffs))(x, y));
                         }
                     }
                 }
             }
         }
+        this.objects = [...obstacles, ...monsters, ...buffs];
     }
 
     connect(other) {
@@ -105,23 +106,17 @@ class Room {
         ctx.globalAlpha = 0.5;
         ctx.drawImage(this.trail, 0, 0);
         ctx.globalAlpha = 1;
-        this.obstacles.forEach((obstacle) => {
-            obstacle.draw(ctx);
-        });
-        this.monsters.forEach((monster) => {
-            monster.draw(ctx);
-        });
-        this.buffs.forEach((buff) => {
-            buff.draw(ctx);
+        this.objects.forEach((object) => {
+            object.draw(ctx);
         });
         ctx.restore();
     }
 
     update() {
-        this.monsters.forEach((monster, index, object) => {
-            monster.update();
-            if (monster.health <= 0) {
-                object.splice(index, 1);
+        this.objects.forEach((object, index) => {
+            object.update();
+            if (object instanceof Monster && object.health <= 0) {
+                this.objects.splice(index, 1);
             }
         });
     }

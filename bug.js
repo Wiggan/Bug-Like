@@ -24,6 +24,7 @@ async function generate() {
     player_sprite = await generateMirroredPattern(126, tile_size, 'Navy');
     obstacle_sprite = await generatePattern(1957, tile_size, tile_size, 'Grey');
     hp_sprite = await generateDoubleMirroredPattern(1940, tile_size, 'Crimson');
+    hp_regen_sprite = await generateDoubleMirroredPattern(1940, tile_size, 'Gold');
     experience_sprite = await generateDoubleMirroredPattern(192, tile_size, 'Gold');
     experience_big_sprite = await generateDoubleMirroredPattern(194, tile_size, 'Gold');
     max_hp_sprite = await generateDoubleMirroredPattern(2566, tile_size, 'Gold');
@@ -122,11 +123,9 @@ function isMoveValid(target_x, target_y) {
     var room = getRoomRelativeCurrentRoom(target_x, target_y);
     var wrapped_x = (target_x + room_width_tiles) % room_width_tiles;
     var wrapped_y = (target_y + room_height_tiles) % room_height_tiles;
-    return room.obstacles.every((obstacle) => {
-        return obstacle.x != wrapped_x || obstacle.y != wrapped_y
-    }) && room.monsters.every((monster) => {
-        return monster.x != wrapped_x || monster.y != wrapped_y
-    })
+    return room.objects.every((object) => {
+        return object.x != wrapped_x || object.y != wrapped_y || !object.blocking
+    });
 }
 
 function getRoomRelativeCurrentRoom(x, y) {
@@ -144,31 +143,6 @@ function getRoomRelativeCurrentRoom(x, y) {
 }
 
 function update() {
-    var room = getRoomRelativeCurrentRoom(game.player.x, game.player.y);
-    if (room != game.current_room) {
-        console.log("Entering new room: " + JSON.stringify({
-            biome: room.biome.difficulty,
-            x: room.x,
-            y: room.y
-        }));
-        game.current_room = room;
-        game.current_room.fill_surrounding();
-        game.player.x = (game.player.x + room_width_tiles) % room_width_tiles;
-        game.player.y = (game.player.y + room_height_tiles) % room_height_tiles;
-    }
-    
-    var ctx = game.current_room.trail.getContext("2d");
-    ctx.fillStyle = 'SaddleBrown';
-    ctx.fillRect((game.player.x) * game.player.size, (game.player.y) * game.player.size, game.player.size, game.player.size);
-    game.current_room.buffs.forEach((buff, index, object) => {
-        if (buff.x == game.player.x && buff.y == game.player.y) {
-            buff.pickUp();
-            object.splice(index, 1);
-        }
-    })
     game.current_room.update();
-
-    if (game.player.health <= 0) {
-        state = StateEnum.End;
-    }
+    game.player.update();
 }

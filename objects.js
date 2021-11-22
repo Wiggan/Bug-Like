@@ -4,6 +4,7 @@ class Object {
     constructor(sprite, x, y, description) {
         this.x = x;
         this.y = y;
+        this.blocking = true;
         this.size = tile_size;
         this.description = description;
         this.sprite = sprite;
@@ -36,6 +37,13 @@ class Object {
         }
         ctx.restore();
     }
+    
+    distanceToPlayer() {
+        //return Math.max(Math.abs(this.x - player.x), Math.abs(this.y - player.y));
+        return Math.abs(this.x - game.player.x) + Math.abs(this.y - game.player.y);
+    }
+
+    update() {}
 }
 
 class Rock extends Object {
@@ -48,6 +56,7 @@ class Rock extends Object {
 class Buff extends Object {
     constructor(sprite, x, y, description) {
         super(sprite, x, y, description);
+        this.blocking = false;
     }
 }
 
@@ -61,25 +70,35 @@ class HP extends Buff {
     }
 }
 
-class MaxHP extends Buff {
+class Regen extends Buff {
     constructor(x, y) {
-        super(max_hp_sprite, x, y, '+20 max health');
+        super(hp_regen_sprite, x, y, '+1 health regeneration');
     }
     
     pickUp() {
-        game.player.max_health += 20;
-        game.player.heal(20);
+        game.player.regen++;
+    }
+}
+
+class MaxHP extends Buff {
+    constructor(x, y) {
+        super(max_hp_sprite, x, y, '+10 max health');
+    }
+    
+    pickUp() {
+        game.player.max_health += 10;
+        game.player.heal(10);
         game.score += 10;
     }
 }
 
 class DMG extends Buff {
     constructor(x, y) {
-        super(dmg_sprite, x, y, '+10 damage');
+        super(dmg_sprite, x, y, '+5 damage');
     }
     
     pickUp() {
-        game.player.damage += 10;
+        game.player.damage += 5;
         game.score += 10;
     }
 }
@@ -114,7 +133,7 @@ class Experience extends Buff {
     }
     
     pickUp() {
-        game.player.experience += 10;
+        game.player.gainExperience(10);
         game.score += 10;
     }
 }
@@ -125,12 +144,12 @@ class ExperienceBig extends Buff {
     }
     
     pickUp() {
-        game.player.experience += 100;
+        game.player.gainExperience(100);
         game.score += 10;
     }
 }
 
-var buffs = [HP, Experience, Initiative, MaxHP, ExperienceBig, DMG, Range];
+var buffs = [HP, Experience, Regen, Initiative, MaxHP, ExperienceBig, DMG, Range];
 
 
 class Actor extends Object {
@@ -193,6 +212,7 @@ class Player extends Actor {
         this.experience = 0;
         this.level_up_experience = this.getLevelUpExperience(this.level);
         this.previous_level_up_experience = 0;
+        this.regen = 0;
     }
     
     getLevelUpExperience(level) {
@@ -214,7 +234,7 @@ class Player extends Actor {
             this.level++;
             this.max_health += 10;
             this.damage += 10;
-            this.health = this.max_health;
+            this.heal(this.max_health);
             this.previous_level_up_experience = this.level_up_experience;
             this.level_up_experience = this.getLevelUpExperience(this.level);
         }
@@ -233,24 +253,52 @@ class Player extends Actor {
         Actor.prototype.drawInfoBox.call(this,ctx);
         this.drawExperienceBar(ctx);
     }
+
+    update() {
+        var room = getRoomRelativeCurrentRoom(this.x, this.y);
+        if (room != game.current_room) {
+            console.log("Entering new room: " + JSON.stringify({
+                biome: room.biome.difficulty,
+                x: room.x,
+                y: room.y
+            }));
+            game.current_room = room;
+            game.current_room.fill_surrounding();
+            this.x = (this.x + room_width_tiles) % room_width_tiles;
+            this.y = (this.y + room_height_tiles) % room_height_tiles;
+        }
+        
+        var ctx = game.current_room.trail.getContext("2d");
+        ctx.fillStyle = 'SaddleBrown';
+        ctx.fillRect((this.x) * this.size, (this.y) * this.size, this.size, this.size);
+        game.current_room.objects.forEach((object, index) => {
+            if (object instanceof Buff && object.x == this.x && object.y == this.y) {
+                object.pickUp();
+                game.current_room.objects.splice(index, 1);
+            }
+        });
+
+        if (this.health <= 0) {
+            state = StateEnum.End;
+        }
+
+        this.heal(this.regen);
+    }
+    
 }
 
 class Monster extends Actor {
-    constructor(room, sprite, x, y, desciption, max_health, aggro_range, speed, damage) {
+    constructor(room, sprite, x, y, desciption, max_health, aggro_range, speed, damage, initiative) {
         super(sprite, x, y, desciption, max_health);
         this.aggro_range = aggro_range;
         this.range = 1;
-        this.initiative = 20;
+        this.initiative = initiative;
         this.experience_value = 20;
         this.room = room;
         this.speed = speed;
         this.damage = damage;
     }
 
-    distanceToPlayer() {
-        //return Math.max(Math.abs(this.x - player.x), Math.abs(this.y - player.y));
-        return Math.abs(this.x - game.player.x) + Math.abs(this.y - game.player.y);
-    }
 
     update() {
         if (this.health <= 0) { return; }
@@ -300,49 +348,49 @@ class Monster extends Actor {
 
 class Ant extends Monster {
     constructor(room, x, y) {
-        super(room, ants_sprite, x, y, "Ant", 15, 2, 1, 5);
+        super(room, ants_sprite, x, y, "Ant", 15, 2, 1, 5, 11);
     }
 }
 
 class Spider extends Monster {
     constructor(room, x, y) {
-        super(room, spider_sprite, x, y, "Spider", 40, 3, 2, 10);
+        super(room, spider_sprite, x, y, "Spider", 40, 3, 2, 10, 20);
     }
 }
 
 class Centepede extends Monster {
     constructor(room, x, y) {
-        super(room, centepede_sprite, x, y, "Centepede", 30, 2, 2, 10);
+        super(room, centepede_sprite, x, y, "Centepede", 30, 2, 2, 10, 15);
     }
 }
 
 class Woodlouse extends Monster {
     constructor(room, x, y) {
-        super(room, woodlouse_sprite, x, y, "Woodlouse", 60, 1, 1, 5);
+        super(room, woodlouse_sprite, x, y, "Woodlouse", 60, 1, 1, 5, 9);
     }
 }
 
 class MayBug extends Monster {
     constructor(room, x, y) {
-        super(room, may_bug_sprite, x, y, "May Bug", 40, 2, 2, 10);
+        super(room, may_bug_sprite, x, y, "May Bug", 40, 2, 2, 10, 20);
     }
 }
 
 class Mantis extends Monster {
     constructor(room, x, y) {
-        super(room, mantis_sprite, x, y, "Mantis", 70, 5, 1, 50);
+        super(room, mantis_sprite, x, y, "Mantis", 70, 5, 1, 50, 50);
     }
 }
 
 class Tic extends Monster {
     constructor(room, x, y) {
-        super(room, tic_sprite, x, y, "Tic", 30, 1, 1, 5);
+        super(room, tic_sprite, x, y, "Tic", 30, 1, 1, 5, 13);
     }
 }
 
 class Beetle extends Monster {
     constructor(room, x, y) {
-        super(room, beetle_sprite, x, y, "Beetle", 60, 3, 1, 10);
+        super(room, beetle_sprite, x, y, "Beetle", 60, 3, 1, 10, 11);
     }
 }
 
