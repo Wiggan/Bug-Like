@@ -125,6 +125,48 @@ async function generatePattern(seed, width, height, color) {
     return canvas2image(canvas);
 }
 
+async function generateSoundOnSprite() {
+    var canvas = document.createElement('canvas');
+    canvas.width = 30;
+    canvas.height = 30;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.moveTo(5, 10);
+    ctx.lineTo(5, 20);
+    ctx.lineTo(15, 20);
+    ctx.lineTo(25, 30);
+    ctx.lineTo(25, 0);
+    ctx.lineTo(15, 10);
+    ctx.closePath();
+    ctx.fill();
+    return canvas2image(canvas);
+}
+
+async function generateSoundOffSprite() {
+    var canvas = document.createElement('canvas');
+    canvas.width = 30;
+    canvas.height = 30;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.moveTo(5, 10);
+    ctx.lineTo(5, 20);
+    ctx.lineTo(15, 20);
+    ctx.lineTo(25, 30);
+    ctx.lineTo(25, 0);
+    ctx.lineTo(15, 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(28, 2);
+    ctx.lineTo(2, 28);
+    ctx.stroke();
+    return canvas2image(canvas);
+}
+
 async function canvas2image(canvas) {
     var img;
     const imageLoadPromise = new Promise(resolve => {

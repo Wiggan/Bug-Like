@@ -6,6 +6,7 @@ const StateEnum = {
 };
 var state = StateEnum.Beginning;
 var showInfo = false;
+var playSounds = true;
 
 var game = undefined;
 
@@ -46,6 +47,8 @@ async function generate() {
         await generateDoubleMirroredPattern(22, effect_size, 'Crimson'),
         await generateDoubleMirroredPattern(60, effect_size, 'Crimson')
     ];
+    sound_on_sprite = await generateSoundOnSprite();
+    sound_off_sprite = await generateSoundOffSprite();
 }
 
 async function drawStart() {
