@@ -32,8 +32,10 @@ class Room {
                     if (this.random()*0.4 + distance*0.6 > 0.5) {
                         obstacles.push(new Rock(x, y));
                     } else {
-                        //if (this.random()**1.5 < this.biome.difficulty*0.8) {
-                        if (getKumaraswamySample(this.random(), this.biome.difficulty)*distance > 0.2) {
+                        // if far from center, but not along the perifery, then add monster. 
+                        // Monsters block entrance, so avoid having them in the perifery.
+                        if (getKumaraswamySample(this.random(), this.biome.difficulty)*distance > 0.2 &&
+                            x != 0 && y != 0 && x != room_width_tiles-1 && y != room_height_tiles-1) {
                             monsters.push(new (getRandomElement(this.biome.monsters))(this, x, y));
                         } else {
                             buffs.push(new (getRandomElement(this.biome.buffs))(x, y));
@@ -148,11 +150,12 @@ class Room {
     }
 
     update() {
-        this.objects.forEach((object, index) => {
+        this.objects = this.objects.filter((object, index) => {
             object.update();
             if (object instanceof Monster && object.health <= 0) {
-                this.objects.splice(index, 1);
+                return false;
             }
+            return true;
         });
     }
 
