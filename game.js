@@ -1,6 +1,6 @@
 
+const clamp = (min, num, max) => Math.min(Math.max(num, min), max);
 
-// Game session variables
 class Game {
     constructor() {
         this.rooms = [];
@@ -15,32 +15,25 @@ class Game {
         this.biomes = await this.generateBiomes(0);
         this.player = new Player();
         var first_room = new Room(undefined, 0, 0);
-        first_room.objects.forEach((o, i) => {
-            if (o.distanceToPlayer() == 0) {
-                first_room.obstacles.splice(i, 1);
-            }
-        });
+
+        first_room.clearArea(this.player.x, this.player.y, 3);
         this.rooms.push(first_room);
         this.current_room = game.rooms[0];
         this.rooms[0].fill_surrounding();
-    }
-    
-    
+    } 
 
     async generateBiomes(seed) {
         var random = mulberry32(seed);
         var biomes = [];
 
         for (var i = 0; i < 20; i++) {
-            var difficulty = Math.min(0.05 + (random() * 0.01 + 0.085) * i, 1);
-            //console.log("Randomized difficulty: " + difficulty);
-            var monster
+            var difficulty = getKumaraswamySample(random(), i/20);
+            console.log("Randomized difficulty: " + difficulty);
             biomes.push({
                 color: getRandomColor(random, difficulty),
                 background: await generatePattern(random()*100, room_width, room_height, 'Black'),
                 music: 'nice.ogg',
-                density: difficulty / (1 + 3 * difficulty * random()),
-                rockiness: 0.5 - random()*difficulty,
+                density: clamp(0.04, getKumaraswamySample(random(), difficulty), 0.6),
                 difficulty: difficulty,
                 monsters: getUniqueElementsFromArray(monsters, difficulty),
                 buffs: getUniqueElementsFromArray(buffs, difficulty),

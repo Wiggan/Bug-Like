@@ -14,10 +14,9 @@ class Room {
         this.random = mulberry32(Math.random() * 1000);
         if (creator == undefined) {
             this.biome = game.biomes[0];
-        } else if (this.random() < 0.3) {
-            this.biome = getRandomElementWeighted(game.biomes, this.random(), (x*x + y*y) / 100);
+        } else if (this.random() < 0.5) {
+            this.biome = getRandomElementWeighted(game.biomes, this.random(), (this.x**2 + this.y**2) / 50);
         } else {
-            console.log("using parent biome");
             this.biome = creator.biome;
         }
         var obstacles = [];
@@ -25,11 +24,16 @@ class Room {
         var buffs = [];
         for (var x = 0; x < room_width_tiles; x++) {
             for (var y = 0; y < room_height_tiles; y++) {
-                if (this.random() < this.biome.density*0.8) {
-                    if (this.random() > 0.5) {
+                // Should there be anything at all?
+                if (this.random() < this.biome.density) {
+                    // If so, let rocks dominate the perifery and concentrate monsters and buffs to the center
+                    //console.log("x: " + x + ", y: " + y + " relativeDistance: " + this.getRelativeDistanceToCenter(x, y));
+                    var distance = this.getRelativeDistanceToCenter(x, y);
+                    if (this.random()*0.4 + distance*0.6 > 0.5) {
                         obstacles.push(new Rock(x, y));
                     } else {
-                        if (this.random()**1.5 < this.biome.difficulty*0.8) {
+                        //if (this.random()**1.5 < this.biome.difficulty*0.8) {
+                        if (getKumaraswamySample(this.random(), this.biome.difficulty)*distance > 0.2) {
                             monsters.push(new (getRandomElement(this.biome.monsters))(this, x, y));
                         } else {
                             buffs.push(new (getRandomElement(this.biome.buffs))(x, y));
@@ -39,6 +43,37 @@ class Room {
             }
         }
         this.objects = [...obstacles, ...monsters, ...buffs];
+        // Ensure we almost always have a monster and a buff in each room
+        if (buffs.length == 0) {
+            var x = Math.floor(this.random()*room_width_tiles);
+            var y = Math.floor(this.random()*room_height_tiles);
+            this.clearArea(x, y, 0.9);
+            this.objects.push(new (getRandomElement(this.biome.buffs))(x, y));
+        }
+        if (monsters.length == 0) {
+            var x = Math.floor(this.random()*room_width_tiles);
+            var y = Math.floor(this.random()*room_height_tiles);
+            this.clearArea(x, y, 0.9);
+            this.objects.push(new (getRandomElement(this.biome.monsters))(this, x, y));
+        }
+    }
+
+    clearArea(x, y, radius) {
+
+        this.objects = this.objects.filter((o) => {
+            var distance = Math.sqrt((o.x - x)**2 + (o.y - y)**2);
+            if(distance <= radius) {
+                console.log("distance: " + distance);
+                console.log("Removed object");
+                return false;
+            }
+            return true;
+        });
+    }
+
+    getRelativeDistanceToCenter(x, y) {
+        const max = Math.sqrt((room_width_tiles/2)**2 + (room_height_tiles/2)**2);
+        return Math.sqrt((room_width_tiles/2 - x)**2 + (room_height_tiles/2 - y)**2) / max;
     }
 
     connect(other) {

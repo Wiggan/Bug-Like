@@ -291,6 +291,7 @@ class Monster extends Actor {
     constructor(room, sprite, x, y, desciption, max_health, aggro_range, speed, damage, initiative) {
         super(sprite, x, y, desciption, max_health);
         this.aggro_range = aggro_range;
+        this.isAggro = false;
         this.range = 1;
         this.initiative = initiative;
         this.experience_value = 20;
@@ -299,14 +300,44 @@ class Monster extends Actor {
         this.damage = damage;
     }
 
-
     update() {
+        // Check if alive
         if (this.health <= 0) { return; }
+
+        // Check aggro
         if (this.distanceToPlayer() <= this.aggro_range) {
+            this.isAggro = true;
             console.log("Got aggro!");
+        } else if (this.distanceToPlayer() > this.aggro_range + 1) {
+            this.isAggro = false;
+            console.log("Lost aggro!");
+        }
+
+        // Move
+        if (this.isAggro) {
             var moved = 0;
-            //while (moved < this.speed && this.distanceToPlayer() > 1) {
-            if ( this.distanceToPlayer() > 1) {
+            var attempts = 0;
+            while (moved < this.speed && this.distanceToPlayer() > 1 && attempts < 15) {
+                attempts++;
+                if (Math.random() < 0.5) {
+                    if ( this.distanceToPlayer() > 1) {
+                        var x_step = Math.sign(this.x - game.player.x);
+                        if (isMoveValid(this.x - x_step, this.y)) {
+                            this.x -= x_step
+                            moved += Math.abs(x_step);
+                        }
+                    }
+                } else {
+                    if ( this.distanceToPlayer() > 1) {
+                        var y_step = Math.sign(this.y - game.player.y);
+                        if (isMoveValid(this.x, this.y - y_step)) {
+                            this.y -= y_step
+                            moved += Math.abs(y_step);
+                        }
+                    }
+                }
+            }
+            /* if ( this.distanceToPlayer() > 1) {
                 var x_step = Math.sign(this.x - game.player.x);
                 if (isMoveValid(this.x - x_step, this.y)) {
                     this.x -= x_step
@@ -321,7 +352,7 @@ class Monster extends Actor {
                         moved += Math.abs(y_step);
                     }
                 }
-            }
+            } */
         }
         // Compare initative, so that if player is faster than monster, monster never hits player if it dies 
         // due to the damage inflicted by the player.
@@ -384,7 +415,7 @@ class Mantis extends Monster {
 
 class Tic extends Monster {
     constructor(room, x, y) {
-        super(room, tic_sprite, x, y, "Tic", 30, 1, 1, 5, 13);
+        super(room, tic_sprite, x, y, "Tic", 30, 1, 0, 5, 13);
     }
 }
 

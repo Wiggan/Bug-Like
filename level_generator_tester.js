@@ -24,6 +24,7 @@ async function generate() {
     player_sprite = await generateMirroredPattern(126, tile_size, 'Navy');
     obstacle_sprite = await generatePattern(1957, tile_size, tile_size, 'Grey');
     hp_sprite = await generateDoubleMirroredPattern(1940, tile_size, 'Crimson');
+    hp_regen_sprite = await generateDoubleMirroredPattern(1940, tile_size, 'Gold');
     experience_sprite = await generateDoubleMirroredPattern(192, tile_size, 'Gold');
     experience_big_sprite = await generateDoubleMirroredPattern(194, tile_size, 'Gold');
     max_hp_sprite = await generateDoubleMirroredPattern(2566, tile_size, 'Gold');
