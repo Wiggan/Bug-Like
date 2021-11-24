@@ -31,6 +31,9 @@ async function generate() {
     dmg_sprite = await generateMirroredPattern(1742, tile_size, 'Gold');
     range_sprite = await generateMirroredPattern(605, tile_size, 'Gold');
     initiative_sprite = await generateMirroredPattern(1090, tile_size, 'Gold');
+    pickup_range_sprite = await generatePattern(1080, tile_size, tile_size, 'Gold');
+    move_rocks_sprite = await generatePattern(1081, tile_size, tile_size, 'Gold');
+    
     ants_sprite = await generateMirroredPattern(463, tile_size, tile_size, 'Black');
     spider_sprite = await generateMirroredPattern(101, tile_size, 'Black');
     centepede_sprite = await generateMirroredPattern(103, tile_size, 'Black');

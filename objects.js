@@ -47,7 +47,7 @@ class Object {
 }
 
 class Rock extends Object {
-    constructor(x, y) {
+    constructor(room, x, y) {
         super(obstacle_sprite, x, y, 'Rock');
     }
 }
@@ -61,7 +61,7 @@ class Buff extends Object {
 }
 
 class HP extends Buff {
-    constructor(x, y) {
+    constructor(room, x, y) {
         super(hp_sprite, x, y, '+20 health');
     }
     
@@ -71,7 +71,7 @@ class HP extends Buff {
 }
 
 class Regen extends Buff {
-    constructor(x, y) {
+    constructor(room, x, y) {
         super(hp_regen_sprite, x, y, '+1 health regeneration');
     }
     
@@ -81,7 +81,7 @@ class Regen extends Buff {
 }
 
 class MaxHP extends Buff {
-    constructor(x, y) {
+    constructor(room, x, y) {
         super(max_hp_sprite, x, y, '+10 max health');
     }
     
@@ -93,7 +93,7 @@ class MaxHP extends Buff {
 }
 
 class DMG extends Buff {
-    constructor(x, y) {
+    constructor(room, x, y) {
         super(dmg_sprite, x, y, '+5 damage');
     }
     
@@ -103,8 +103,65 @@ class DMG extends Buff {
     }
 }
 
+class Initiative extends Buff {
+    constructor(room, x, y) {
+        super(initiative_sprite, x, y, '+1 initiative');
+    }
+    
+    pickUp() {
+        game.player.initiative++;
+        game.score += 10;
+    }
+}
+
+class Experience extends Buff {
+    constructor(room, x, y) {
+        super(experience_sprite, x, y, '+10 experience');
+    }
+    
+    pickUp() {
+        game.player.gainExperience(10);
+        game.score += 10;
+    }
+}
+
+class ExperienceBig extends Buff {
+    constructor(room, x, y) {
+        super(experience_sprite, x, y, '+100 experience');
+    }
+    
+    pickUp() {
+        game.player.gainExperience(100);
+        game.score += 10;
+    }
+}
+
+var buffs = [HP, Experience, Regen, Initiative, MaxHP, ExperienceBig, DMG];
+
+class PickupRange extends Buff {
+    constructor(room, x, y) {
+        super(pickup_range_sprite, x, y, '+1 pick up range!');
+    }
+    
+    pickUp() {
+        game.player.pickupRange++;
+        game.score += 100;
+    }
+}
+
+class MoveRocks extends Buff {
+    constructor(room, x, y) {
+        super(move_rocks_sprite, x, y, 'Lets you move rocks!');
+    }
+    
+    pickUp() {
+        game.player.canMoveRocks = true;
+        game.score += 100;
+    }
+}
+
 class Range extends Buff {
-    constructor(x, y) {
+    constructor(room, x, y) {
         super(range_sprite, x, y, '+1 range');
     }
     
@@ -116,40 +173,6 @@ class Range extends Buff {
     }
 }
 
-class Initiative extends Buff {
-    constructor(x, y) {
-        super(initiative_sprite, x, y, '+1 initiative');
-    }
-    
-    pickUp() {
-        game.player.initiative++;
-        game.score += 10;
-    }
-}
-
-class Experience extends Buff {
-    constructor(x, y) {
-        super(experience_sprite, x, y, '+10 experience');
-    }
-    
-    pickUp() {
-        game.player.gainExperience(10);
-        game.score += 10;
-    }
-}
-
-class ExperienceBig extends Buff {
-    constructor(x, y) {
-        super(experience_sprite, x, y, '+100 experience');
-    }
-    
-    pickUp() {
-        game.player.gainExperience(100);
-        game.score += 10;
-    }
-}
-
-var buffs = [HP, Experience, Regen, Initiative, MaxHP, ExperienceBig, DMG, Range];
 
 
 class Actor extends Object {
@@ -207,12 +230,14 @@ class Player extends Actor {
         super(player_sprite, 4, 4, "You: Lucanus Cervus", 20);
         this.damage = 10;
         this.range = 1;
+        this.pickupRange = 0;
         this.initiative = 10;
         this.level = 1;
         this.experience = 0;
         this.level_up_experience = this.getLevelUpExperience(this.level);
         this.previous_level_up_experience = 0;
         this.regen = 0;
+        this.canMoveRocks = false;
     }
     
     getLevelUpExperience(level) {
@@ -271,11 +296,12 @@ class Player extends Actor {
         var ctx = game.current_room.trail.getContext("2d");
         ctx.fillStyle = 'SaddleBrown';
         ctx.fillRect((this.x) * this.size, (this.y) * this.size, this.size, this.size);
-        game.current_room.objects.forEach((object, index) => {
-            if (object instanceof Buff && object.x == this.x && object.y == this.y) {
+        game.current_room.objects = game.current_room.objects.filter((object, index) => {
+            if (object instanceof Buff && object.distanceToPlayer() <= this.pickupRange) {
                 object.pickUp();
-                game.current_room.objects.splice(index, 1);
+                return false;
             }
+            return true;
         });
 
         if (this.health <= 0) {
@@ -337,22 +363,6 @@ class Monster extends Actor {
                     }
                 }
             }
-            /* if ( this.distanceToPlayer() > 1) {
-                var x_step = Math.sign(this.x - game.player.x);
-                if (isMoveValid(this.x - x_step, this.y)) {
-                    this.x -= x_step
-                    moved += Math.abs(x_step);
-                }
-            }
-            if ( this.distanceToPlayer() > 1) {
-                if (moved < this.speed) { 
-                    var y_step = Math.sign(this.y - game.player.y);
-                    if (isMoveValid(this.x, this.y - y_step)) {
-                        this.y -= y_step
-                        moved += Math.abs(y_step);
-                    }
-                }
-            } */
         }
         // Compare initative, so that if player is faster than monster, monster never hits player if it dies 
         // due to the damage inflicted by the player.

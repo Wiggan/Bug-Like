@@ -30,7 +30,7 @@ class Room {
                     //console.log("x: " + x + ", y: " + y + " relativeDistance: " + this.getRelativeDistanceToCenter(x, y));
                     var distance = this.getRelativeDistanceToCenter(x, y);
                     if (this.random()*0.4 + distance*0.6 > 0.5) {
-                        obstacles.push(new Rock(x, y));
+                        obstacles.push(new Rock(this, x, y));
                     } else {
                         // if far from center, but not along the perifery, then add monster. 
                         // Monsters block entrance, so avoid having them in the perifery.
@@ -38,7 +38,11 @@ class Room {
                             x != 0 && y != 0 && x != room_width_tiles-1 && y != room_height_tiles-1) {
                             monsters.push(new (getRandomElement(this.biome.monsters))(this, x, y));
                         } else {
-                            buffs.push(new (getRandomElement(this.biome.buffs))(x, y));
+                            if (buffs.length < 4) {
+                                buffs.push(new (getRandomElement(this.biome.buffs))(this, x, y));
+                            } else {
+                                obstacles.push(new Rock(x, y));
+                            }
                         }
                     }
                 }
@@ -49,28 +53,44 @@ class Room {
         if (buffs.length == 0) {
             var x = Math.floor(this.random()*room_width_tiles);
             var y = Math.floor(this.random()*room_height_tiles);
-            this.clearArea(x, y, 0.9);
-            this.objects.push(new (getRandomElement(this.biome.buffs))(x, y));
+            this.clearArea(x, y, 1, 1);
+            this.objects.push(new (getRandomElement(this.biome.buffs))(this, x, y));
         }
         if (monsters.length == 0) {
             var x = Math.floor(this.random()*room_width_tiles);
             var y = Math.floor(this.random()*room_height_tiles);
-            this.clearArea(x, y, 0.9);
+            this.clearArea(x, y, 1, 1);
             this.objects.push(new (getRandomElement(this.biome.monsters))(this, x, y));
+        }
+        // Avoid putting this in first room!
+        if (creator != undefined &&  this.random() > 0.08) {
+            this.addPredefinedPattern();
         }
     }
 
-    clearArea(x, y, radius) {
-
+    clearArea(x, y, width, height) {
         this.objects = this.objects.filter((o) => {
-            var distance = Math.sqrt((o.x - x)**2 + (o.y - y)**2);
-            if(distance <= radius) {
-                console.log("distance: " + distance);
-                console.log("Removed object");
+            if(x <= o.x && o.x <= x + width && y <= o.y && o.y <= y + height) {
                 return false;
             }
             return true;
         });
+    }
+
+    addPredefinedPattern() {
+        if (game.patterns.length > 0) {
+            var pattern = game.patterns.splice(0, 1)[0];
+            var x_start = Math.floor(this.random() * (room_width_tiles - pattern[0].length));
+            var y_start = Math.floor(this.random() * (room_height_tiles - pattern.length));
+            this.clearArea(x_start, y_start, pattern[0].length, pattern.length);
+            for (var y = 0; y <  pattern.length; y++) {
+                for (var x = 0; x < pattern[y].length; x++) {
+                    if (pattern[y][x] != null) {
+                        this.objects.push(new pattern[y][x](this, x_start + x, y_start + y));
+                    }
+                }
+            }
+        }
     }
 
     getRelativeDistanceToCenter(x, y) {

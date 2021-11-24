@@ -8,7 +8,12 @@ class Game {
         this.biomes = [];
         this.score = 0;
         this.current_room = undefined;
-        console.log("hej game ctor");
+        this.patterns = [
+            [[Rock, Rock, Rock], [Rock, PickupRange, Mantis], [Rock, Rock, Rock]],  // Needs nothing
+            [[Rock, Rock, Rock], [Rock, MoveRocks, Rock], [Rock, Rock, Rock]],  // Needs pickup range 
+            [[null, Rock, null], [Rock, Range, Rock], [null, Rock, null]], // Needs move rocks
+            [[null, null, Rock, Rock, null], [null, Rock, Tic, Rock, Rock], [Rock, Tic, null, Tic, Rock], [Rock, Rock, Tic, Rock, null], [null, Rock, Rock, null, null]],  // Needs range and move rocks
+        ];
     }
     
     async build() {
@@ -16,7 +21,7 @@ class Game {
         this.player = new Player();
         var first_room = new Room(undefined, 0, 0);
 
-        first_room.clearArea(this.player.x, this.player.y, 3);
+        first_room.clearArea(this.player.x, this.player.y, 3, 3);
         this.rooms.push(first_room);
         this.current_room = game.rooms[0];
         this.rooms[0].fill_surrounding();
