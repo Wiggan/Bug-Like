@@ -68,6 +68,7 @@ async function drawStart() {
     ctx.fillStyle = 'black';
     ctx.font = "20px sans-serif";
     ctx.fillText("Press any key to start...", 50, 50);
+    clearEffects();
     clearHud();
 }
 
@@ -114,16 +115,8 @@ function draw() {
 }
 
 function drawEnd() {
-    var canvas = document.getElementById('mycanvas');
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'black';
-    ctx.globalAlpha = 0.5;
-    ctx.fillRect(0, 0, width, height);
-    ctx.globalAlpha = 1;
-    ctx.font = "20px sans-serif";
-    ctx.fillText("You died!", 50, 50);
-    ctx.fillText("Score: " + game.score, 50, 150);
     clearHud();
+    game.end = new DeathEffect();
 }
 
 function getRoomRelativeCurrentRoom(x, y) {

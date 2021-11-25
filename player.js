@@ -78,7 +78,7 @@ class Player extends Actor {
         });
 
         if (this.health <= 0) {
-            state = StateEnum.End;
+            drawEnd();
         }
 
         this.heal(this.regen);
@@ -100,6 +100,10 @@ class Player extends Actor {
     }
     
     move(x, y) {
+        // Handle being dead
+        if (this.health <= 0) {
+            return;
+        }
         // Handle wait
         if (x == 0 && y == 0) {
             update();

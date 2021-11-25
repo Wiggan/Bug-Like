@@ -181,9 +181,12 @@ class Actor extends Object {
         this.max_health = max_health;
         this.health = max_health;
         this.health_change = 0;
+        this.last_instigator = undefined;
     }
 
-    takeDamage(amount) {
+    takeDamage(amount, instigator) {
+        this.last_instigator = instigator;
+        amount = Math.min(amount, this.health);
         this.health -= amount;
         this.health_change -= amount;
         // compensate for half effect size and one square of neighrbor rooms being drawn, bah
@@ -235,8 +238,8 @@ class Actor extends Object {
 }
 
 class Monster extends Actor {
-    constructor(room, sprite, x, y, desciption, max_health, aggro_range, speed, damage, initiative) {
-        super(sprite, x, y, desciption, max_health);
+    constructor(room, sprite, x, y, description, max_health, aggro_range, speed, damage, initiative) {
+        super(sprite, x, y, description, max_health);
         this.aggro_range = aggro_range;
         this.isAggro = false;
         this.range = 1;
@@ -290,11 +293,11 @@ class Monster extends Actor {
         var distance = this.distanceToPlayer();
         if (this.initiative > game.player.initiative) {
             if (this.health > 0 && distance <= this.range) {
-                game.player.takeDamage(this.damage);
+                game.player.takeDamage(this.damage, this);
             }
         }
         if (distance <= game.player.range) {
-            this.takeDamage(game.player.damage);
+            this.takeDamage(game.player.damage, game.player);
             if (this.health <= 0) {
                 game.player.gainExperience(this.experience_value);
                 game.score += 10;
@@ -302,7 +305,7 @@ class Monster extends Actor {
         }
         if (this.initiative <= game.player.initiative) {
             if (this.health > 0 && distance <= this.range) {
-                game.player.takeDamage(this.damage);
+                game.player.takeDamage(this.damage, this);
             }
         }
     }
