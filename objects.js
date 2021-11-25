@@ -223,94 +223,15 @@ class Actor extends Object {
         Object.prototype.drawInfoBox.call(this,ctx);
         this.drawHealthBar(ctx);
     }
-}
 
-class Player extends Actor {
-    constructor() {
-        super(player_sprite, 4, 4, "You: Lucanus Cervus", 20);
-        this.damage = 10;
-        this.range = 1;
-        this.pickupRange = 0;
-        this.initiative = 10;
-        this.level = 1;
-        this.experience = 0;
-        this.level_up_experience = this.getLevelUpExperience(this.level);
-        this.previous_level_up_experience = 0;
-        this.regen = 0;
-        this.canMoveRocks = false;
-    }
-    
-    getLevelUpExperience(level) {
-        return Math.floor(30**((1 + level * 0.2)));
-    }
-
-    heal(amount) {
-        if (this.health < this.max_health) {
-            amount = Math.min(amount, this.max_health - this.health);
-            this.health = this.health + amount;
-            this.health_change += amount;
-        }
-    }
-
-    gainExperience(amount) {
-        this.experience += amount;
-        if (this.experience >= this.level_up_experience) {
-            console.log("Level up!");
-            this.level++;
-            this.max_health += 10;
-            this.damage += 10;
-            this.heal(this.max_health);
-            this.previous_level_up_experience = this.level_up_experience;
-            this.level_up_experience = this.getLevelUpExperience(this.level);
-        }
-    }
-
-    drawExperienceBar(ctx) {
-        ctx.save();
-        ctx.fillStyle = "Black";
-        ctx.fillRect(0, 10, tile_size, 10);
-        ctx.fillStyle = "Grey";
-        ctx.fillRect(0, 10, Math.max(0, tile_size * (this.experience - this.previous_level_up_experience) / (this.level_up_experience - this.previous_level_up_experience)), 10);
-        ctx.restore();
-    }
-
-    drawInfoBox(ctx) {
-        Actor.prototype.drawInfoBox.call(this,ctx);
-        this.drawExperienceBar(ctx);
-    }
-
-    update() {
-        var room = getRoomRelativeCurrentRoom(this.x, this.y);
-        if (room != game.current_room) {
-            console.log("Entering new room: " + JSON.stringify({
-                biome: room.biome.difficulty,
-                x: room.x,
-                y: room.y
-            }));
-            game.current_room = room;
-            game.current_room.fill_surrounding();
-            this.x = (this.x + room_width_tiles) % room_width_tiles;
-            this.y = (this.y + room_height_tiles) % room_height_tiles;
-        }
-        
-        var ctx = game.current_room.trail.getContext("2d");
-        ctx.fillStyle = 'SaddleBrown';
-        ctx.fillRect((this.x) * this.size, (this.y) * this.size, this.size, this.size);
-        game.current_room.objects = game.current_room.objects.filter((object, index) => {
-            if (object instanceof Buff && object.distanceToPlayer() <= this.pickupRange) {
-                object.pickUp();
-                return false;
-            }
-            return true;
+    isMoveValid(target_x, target_y) {
+        var room = getRoomRelativeCurrentRoom(target_x, target_y);
+        var wrapped_x = (target_x + room_width_tiles) % room_width_tiles;
+        var wrapped_y = (target_y + room_height_tiles) % room_height_tiles;
+        return room.objects.every((object) => {
+            return object.x != wrapped_x || object.y != wrapped_y || !object.blocking
         });
-
-        if (this.health <= 0) {
-            state = StateEnum.End;
-        }
-
-        this.heal(this.regen);
     }
-    
 }
 
 class Monster extends Actor {
@@ -348,7 +269,7 @@ class Monster extends Actor {
                 if (Math.random() < 0.5) {
                     if ( this.distanceToPlayer() > 1) {
                         var x_step = Math.sign(this.x - game.player.x);
-                        if (isMoveValid(this.x - x_step, this.y)) {
+                        if (this.isMoveValid(this.x - x_step, this.y)) {
                             this.x -= x_step
                             moved += Math.abs(x_step);
                         }
@@ -356,7 +277,7 @@ class Monster extends Actor {
                 } else {
                     if ( this.distanceToPlayer() > 1) {
                         var y_step = Math.sign(this.y - game.player.y);
-                        if (isMoveValid(this.x, this.y - y_step)) {
+                        if (this.isMoveValid(this.x, this.y - y_step)) {
                             this.y -= y_step
                             moved += Math.abs(y_step);
                         }

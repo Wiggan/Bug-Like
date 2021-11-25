@@ -126,15 +126,6 @@ function drawEnd() {
     clearHud();
 }
 
-function isMoveValid(target_x, target_y) {
-    var room = getRoomRelativeCurrentRoom(target_x, target_y);
-    var wrapped_x = (target_x + room_width_tiles) % room_width_tiles;
-    var wrapped_y = (target_y + room_height_tiles) % room_height_tiles;
-    return room.objects.every((object) => {
-        return object.x != wrapped_x || object.y != wrapped_y || !object.blocking
-    });
-}
-
 function getRoomRelativeCurrentRoom(x, y) {
     if (x < 0) {
         return game.current_room.w;

@@ -19,6 +19,7 @@
    <script type="text/javascript" src="generator.js"></script>
    <script type="text/javascript" src="effect.js"></script>
    <script type="text/javascript" src="objects.js"></script>
+   <script type="text/javascript" src="player.js"></script>
    <script type="text/javascript" src="room.js"></script>
    <script type="text/javascript" src="game.js"></script>
    <script type="text/javascript" src="hud.js"></script>
@@ -65,36 +66,19 @@
             });
          } else if (state == StateEnum.Running) {
             if (e.keyCode == KeyEnum.forward) {
-               if (isMoveValid(game.player.x, game.player.y - 1)) {
-                  game.player.y--;
-                  update();
-                  draw();
-               }
+               game.player.move(0, -1);
                e.preventDefault();
             } else if (e.keyCode == KeyEnum.backward) {
-               if (isMoveValid(game.player.x, game.player.y + 1)) {
-                  game.player.y++;
-                  update();
-                  draw();
-               }
+               game.player.move(0, 1);
                e.preventDefault();
             } else if (e.keyCode == KeyEnum.left) {
-               if (isMoveValid(game.player.x - 1, game.player.y)) {
-                  game.player.x--;
-                  update();
-                  draw();
-               }
+               game.player.move(-1, 0);
                e.preventDefault();
             } else if (e.keyCode == KeyEnum.right) {
-               if (isMoveValid(game.player.x + 1, game.player.y)) {
-                  game.player.x++;
-                  update();
-                  draw();
-               }
+               game.player.move(1, 0);
                e.preventDefault();
             } else if (e.keyCode == KeyEnum.wait) {
-               update();
-               draw();
+               game.player.move(0, 0);
                e.preventDefault();
             }
          } else if (state == StateEnum.End) {

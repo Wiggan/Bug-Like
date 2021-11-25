@@ -77,6 +77,15 @@ class Room {
         });
     }
 
+    getBlockingObjectsAt(x, y) {
+        return this.objects.filter((o) => {
+            if(x == o.x && y == o.y && o.blocking) {
+                return true;
+            }
+            return false;
+        });
+    }
+
     addPredefinedPattern() {
         if (game.patterns.length > 0) {
             var pattern = game.patterns.splice(0, 1)[0];
