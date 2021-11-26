@@ -7,6 +7,7 @@ class Room {
         this.trail = document.createElement('canvas');
         this.trail.width = room_width;
         this.trail.height = room_height;
+        this.visited = false;
         game.rooms.forEach((room) => {
             this.connect(room);
         });
@@ -41,7 +42,7 @@ class Room {
                             if (buffs.length < 4) {
                                 buffs.push(new (getRandomElement(this.biome.buffs))(this, x, y));
                             } else {
-                                obstacles.push(new Rock(x, y));
+                                obstacles.push(new Rock(this, x, y));
                             }
                         }
                     }
@@ -63,7 +64,7 @@ class Room {
             this.objects.push(new (getRandomElement(this.biome.monsters))(this, x, y));
         }
         // Avoid putting this in first room!
-        if (creator != undefined &&  this.random() > 0.08) {
+        if (creator != undefined &&  this.random() > 0.9) {
             this.addPredefinedPattern();
         }
     }
@@ -179,7 +180,7 @@ class Room {
     }
 
     update() {
-        this.objects = this.objects.filter((object, index) => {
+        this.objects = this.objects.filter((object) => {
             object.update();
             if (object instanceof Monster && object.health <= 0) {
                 return false;

@@ -26,8 +26,9 @@ class Game {
 
         first_room.clearArea(this.player.x, this.player.y, 3, 3);
         this.rooms.push(first_room);
-        this.current_room = game.rooms[0];
-        this.rooms[0].fill_surrounding();
+        this.current_room = first_room;
+        first_room.fill_surrounding();
+        first_room.visited = true;
     } 
 
     async generateBiomes(seed) {

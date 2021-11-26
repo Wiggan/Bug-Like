@@ -272,7 +272,7 @@ class Monster extends Actor {
                 if (Math.random() < 0.5) {
                     if ( this.distanceToPlayer() > 1) {
                         var x_step = Math.sign(this.x - game.player.x);
-                        if (this.isMoveValid(this.x - x_step, this.y)) {
+                        if (0 < this.x - x_step && this.x - x_step < room_width_tiles - 1 && this.isMoveValid(this.x - x_step, this.y)) {
                             this.x -= x_step
                             moved += Math.abs(x_step);
                         }
@@ -280,7 +280,7 @@ class Monster extends Actor {
                 } else {
                     if ( this.distanceToPlayer() > 1) {
                         var y_step = Math.sign(this.y - game.player.y);
-                        if (this.isMoveValid(this.x, this.y - y_step)) {
+                        if (0 < this.y - y_step && this.y - y_step < room_height_tiles - 1 && this.isMoveValid(this.x, this.y - y_step)) {
                             this.y -= y_step
                             moved += Math.abs(y_step);
                         }

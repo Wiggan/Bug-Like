@@ -6,6 +6,7 @@ const StateEnum = {
 };
 var state = StateEnum.Beginning;
 var showInfo = false;
+var showMap = false;
 var playSounds = true;
 
 var game = undefined;
@@ -20,6 +21,9 @@ effectcanvas.height = height;
 var hudcanvas = document.getElementById('hudcanvas');
 hudcanvas.width = width;
 hudcanvas.height = 40;
+var mapcanvas = document.getElementById('mapcanvas');
+mapcanvas.width = width;
+mapcanvas.height = height;
 
 async function generate() {
     player_sprite = await generateMirroredPattern(126, tile_size, 'Navy');
@@ -39,7 +43,7 @@ async function generate() {
     ants_sprite = await generateMirroredPattern(463, tile_size, tile_size, 'Black');
     spider_sprite = await generateMirroredPattern(101, tile_size, 'Black');
     centepede_sprite = await generateMirroredPattern(103, tile_size, 'Black');
-    woodlouse_sprite = await generateDoubleMirroredPattern(201, tile_size, 'Black');
+    woodlouse_sprite = await generateDoubleMirroredPattern(201, tile_size, 'Black'); 
     may_bug_sprite = await generateMirroredPattern(120, tile_size, 'Black');
     mantis_sprite = await generateMirroredPattern(526, tile_size, 'Black');
     tic_sprite = await generateMirroredPattern(535, tile_size, 'Black');
@@ -99,6 +103,7 @@ function drawRunning() {
     ctx.restore();
     ctx.restore();
     drawHud();
+    drawMap();
 }
 
 function draw() {

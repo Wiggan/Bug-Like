@@ -56,6 +56,7 @@ class Player extends Actor {
     update() {
         var room = getRoomRelativeCurrentRoom(this.x, this.y);
         if (room != game.current_room) {
+            room.visited = true;
             game.current_room = room;
             game.current_room.fill_surrounding();
             this.x = (this.x + room_width_tiles) % room_width_tiles;
