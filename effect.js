@@ -58,3 +58,34 @@ function clearEffects() {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 }
 
+
+class LevelUpEffect {
+    constructor() {
+        var canvas = document.getElementById('effectcanvas');
+        this.ctx = canvas.getContext('2d');
+        this.fill = 0;
+        this.text_displayed_time = 0;
+        this.interval = setInterval(() => {
+            this.ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+            this.ctx.fillStyle = "Gold";
+            this.ctx.globalAlpha = 0.2;
+            if (this.fill < 1) {
+                this.ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+                this.ctx.clearRect(0.5 * canvas.clientWidth * this.fill, 
+                                   0.5 * canvas.clientHeight * this.fill, 
+                                   canvas.clientWidth * (1-this.fill), 
+                                   canvas.clientHeight * (1-this.fill));
+                this.fill += 0.05;
+            } else if (this.text_displayed_time++ < 100){
+                this.ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+                this.ctx.globalAlpha = 1;
+                this.ctx.fillStyle = "Black";
+                this.ctx.font = "40px sans-serif";
+                var text = "Level Up!";
+                this.ctx.fillText(text, 0.5 * canvas.clientWidth - this.ctx.measureText(text).width * 0.5, 0.5 * canvas.clientHeight - 50);
+            } else {
+                clearInterval(this.interval);
+            }
+        }, 10);
+    }
+}

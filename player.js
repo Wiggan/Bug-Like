@@ -35,6 +35,7 @@ class Player extends Actor {
             this.heal(this.max_health);
             this.previous_level_up_experience = this.level_up_experience;
             this.level_up_experience = this.getLevelUpExperience(this.level);
+            new LevelUpEffect();
         }
     }
 
@@ -55,11 +56,6 @@ class Player extends Actor {
     update() {
         var room = getRoomRelativeCurrentRoom(this.x, this.y);
         if (room != game.current_room) {
-            console.log("Entering new room: " + JSON.stringify({
-                biome: room.biome.difficulty,
-                x: room.x,
-                y: room.y
-            }));
             game.current_room = room;
             game.current_room.fill_surrounding();
             this.x = (this.x + room_width_tiles) % room_width_tiles;
