@@ -136,7 +136,7 @@ class ExperienceBig extends Buff {
     }
 }
 
-var buffs = [HP, Experience, Regen, Initiative, MaxHP, ExperienceBig, DMG];
+var buffs = [HP, Experience, Regen, MaxHP, ExperienceBig, DMG];
 
 class PickupRange extends Buff {
     constructor(room, x, y) {
@@ -313,53 +313,60 @@ class Monster extends Actor {
 
 class Ant extends Monster {
     constructor(room, x, y) {
-        super(room, ants_sprite, x, y, "Ant", 15, 2, 1, 5, 11);
+        super(room, ants_sprite, x, y, "Ant", 15, 2, 1, 5, 0);
     }
 }
 
 class Spider extends Monster {
     constructor(room, x, y) {
-        super(room, spider_sprite, x, y, "Spider", 40, 3, 2, 10, 20);
+        super(room, spider_sprite, x, y, "Spider", 40, 3, 2, 10, 1);
     }
 }
 
 class Centepede extends Monster {
     constructor(room, x, y) {
-        super(room, centepede_sprite, x, y, "Centepede", 30, 2, 2, 10, 15);
+        super(room, centepede_sprite, x, y, "Centepede", 30, 2, 2, 10, 1);
     }
 }
 
 class Woodlouse extends Monster {
     constructor(room, x, y) {
-        super(room, woodlouse_sprite, x, y, "Woodlouse", 60, 1, 1, 5, 9);
+        super(room, woodlouse_sprite, x, y, "Woodlouse", 60, 1, 1, 5, 0);
     }
 }
 
 class MayBug extends Monster {
     constructor(room, x, y) {
-        super(room, may_bug_sprite, x, y, "May Bug", 40, 2, 2, 10, 20);
+        super(room, may_bug_sprite, x, y, "May Bug", 40, 2, 2, 10, 0);
     }
 }
 
 class Mantis extends Monster {
     constructor(room, x, y) {
-        super(room, mantis_sprite, x, y, "Mantis", 70, 5, 1, 50, 50);
+        super(room, mantis_sprite, x, y, "Mantis", 70, 5, 1, 50, 1);
     }
 }
 
 class Tic extends Monster {
     constructor(room, x, y) {
-        super(room, tic_sprite, x, y, "Tic", 30, 1, 0, 5, 13);
+        super(room, tic_sprite, x, y, "Tic", 30, 1, 0, 5, 0);
     }
 }
 
 class Beetle extends Monster {
     constructor(room, x, y) {
-        super(room, beetle_sprite, x, y, "Beetle", 60, 3, 1, 10, 11);
+        super(room, beetle_sprite, x, y, "Beetle", 100, 3, 1, 10, 0);
     }
 }
 
 
 var monsters = [Ant, MayBug, Woodlouse, Tic, Spider, Centepede, Beetle, Mantis];
+
+class PoisonDartFrog extends Monster {
+    constructor(room, x, y) {
+        super(room, poison_dart_frog_sprite, x, y, "Poison Dart Frog", 1, 8, 3, 99999, 1);
+        this.range = 2;
+    }
+}
 
 

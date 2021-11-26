@@ -1,10 +1,10 @@
 class Player extends Actor {
     constructor() {
-        super(player_sprite, 4, 4, "You: Lucanus Cervus", 20);
+        super(player_sprite, 4, 4, "You: Lucanus Cervus", 20000);
         this.damage = 10;
         this.range = 1;
         this.pickupRange = 0;
-        this.initiative = 10;
+        this.initiative = 0;
         this.level = 1;
         this.experience = 0;
         this.level_up_experience = this.getLevelUpExperience(this.level);
@@ -70,7 +70,7 @@ class Player extends Actor {
         ctx.fillStyle = 'SaddleBrown';
         ctx.fillRect((this.x) * this.size, (this.y) * this.size, this.size, this.size);
         game.current_room.objects = game.current_room.objects.filter((object, index) => {
-            if (object instanceof Buff && object.distanceToPlayer() <= this.pickupRange) {
+            if (object instanceof Buff && Math.floor(object.distanceToPlayer()) <= this.pickupRange) {
                 object.pickUp();
                 return false;
             }
@@ -79,9 +79,10 @@ class Player extends Actor {
 
         if (this.health <= 0) {
             drawEnd();
+        } else {
+            this.heal(this.regen);
         }
 
-        this.heal(this.regen);
     }
 
     getBlockingObject(target_x, target_y, x_movement, y_movement) {

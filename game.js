@@ -9,10 +9,13 @@ class Game {
         this.score = 0;
         this.current_room = undefined;
         this.patterns = [
-            [[Rock, Rock, Rock], [Rock, PickupRange, Mantis], [Rock, Rock, Rock]],  // Needs nothing
-            [[Rock, Rock, Rock], [Rock, MoveRocks, Rock], [Rock, Rock, Rock]],  // Needs pickup range 
-            [[null, Rock, null], [Rock, Range, Rock], [null, Rock, null]], // Needs move rocks
-            [[null, null, Rock, Rock, null], [null, Rock, Tic, Rock, Rock], [Rock, Tic, null, Tic, Rock], [Rock, Rock, Tic, Rock, null], [null, Rock, Rock, null, null]],  // Needs range and move rocks
+            [[Rock, Rock, Rock], [Rock, MoveRocks, Mantis], [Rock, Rock, Rock]],  // Needs nothing
+            [[null, Rock, null], [Rock, PickupRange, Rock], [null, Rock, null]], // Needs move rocks
+            [[Rock, Rock, Rock], [Rock, Range, Rock], [Rock, Rock, Rock]],  // Needs pickup range and move rocks
+            [[null, null, Rock, Rock, null], [null, Rock, Tic, Rock, Rock], [Rock, Tic, PickupRange, Tic, Rock], [Rock, Rock, Tic, Rock, null], [null, Rock, Rock, null, null]],  // Needs range and move rocks
+            [[null, null, Rock, Rock, null], [null, null, Rock, Rock, Rock], [Rock, Rock, Initiative, Rock, Rock], [Rock, Rock, Rock, null, null], [null, Rock, Rock, null, null]],  // Needs 2 pickup range
+            [[Rock, Rock, null, Rock, Rock], [Rock, Rock, PoisonDartFrog, Rock, Rock], [null, PoisonDartFrog, null, PoisonDartFrog, null], [Rock, Rock, PoisonDartFrog, Rock, Rock], [Rock, Rock, null, Rock, Rock]],  // Needs initiative
+            
         ];
     }
     

@@ -24,8 +24,8 @@
             for (x = 0; x < 10; x++) {
                for (y = 0; y < 10; y++) {
                   var s = seed*100 + x * 10 + y;
-                  var monster = await generateDoubleMirroredPattern(s, tile_size);
-                  //var monster = await generateMirroredPattern(s, tile_size);
+                  //var monster = await generateDoubleMirroredPattern(s, tile_size);
+                  var monster = await generateMirroredPattern(s, tile_size);
                   //var monster = await generatePattern(s, object_size, tile_size);
                   ctx.drawImage(monster, x * (tile_size + 10), y * (tile_size + 10));
                   ctx.fillText("" + s, x * (tile_size + 10), y * (tile_size + 10) + 10);
