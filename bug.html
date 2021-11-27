@@ -22,6 +22,7 @@
    <script type="text/javascript" src="objects.js"></script>
    <script type="text/javascript" src="player.js"></script>
    <script type="text/javascript" src="room.js"></script>
+   <script type="text/javascript" src="sound.js"></script>
    <script type="text/javascript" src="game.js"></script>
    <script type="text/javascript" src="hud.js"></script>
    <script type="text/javascript" src="bug.js"></script>
@@ -69,7 +70,8 @@
                console.log("Generated!");
                game = new Game;
                await game.build();
-               state = StateEnum.Running;   
+               state = StateEnum.Running;
+               startPlayingMusic();
                update();
                draw();
             });

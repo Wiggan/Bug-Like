@@ -14,7 +14,7 @@ class Game {
             [[Rock, Rock, Rock], [Rock, Range, Rock], [Rock, Rock, Rock]],  // Needs pickup range and move rocks
             [[null, null, Rock, Rock, null], [null, Rock, Tic, Rock, Rock], [Rock, Tic, PickupRange, Tic, Rock], [Rock, Rock, Tic, Rock, null], [null, Rock, Rock, null, null]],  // Needs range and move rocks
             [[null, null, Rock, Rock, null], [null, null, Rock, Rock, Rock], [Rock, Rock, Initiative, Rock, Rock], [Rock, Rock, Rock, null, null], [null, Rock, Rock, null, null]],  // Needs 2 pickup range
-            [[Rock, Rock, null, Rock, Rock], [Rock, Rock, PoisonDartFrog, Rock, Rock], [null, PoisonDartFrog, null, PoisonDartFrog, null], [Rock, Rock, PoisonDartFrog, Rock, Rock], [Rock, Rock, null, Rock, Rock]],  // Needs initiative
+            [[Rock, Rock, null, Rock, Rock], [Rock, Rock, PoisonDartFrog, Rock, Rock], [null, PoisonDartFrog, LevelUp, PoisonDartFrog, null], [Rock, Rock, PoisonDartFrog, Rock, Rock], [Rock, Rock, null, Rock, Rock]],  // Needs initiative
             
         ];
     }
@@ -41,7 +41,7 @@ class Game {
             biomes.push({
                 color: getRandomColor(random, difficulty),
                 background: await generatePattern(random()*100, room_width, room_height, 'Black'),
-                music: 'nice.ogg',
+                music: getRandomElementWeighted(songs, random(), difficulty),
                 density: clamp(0.04, getKumaraswamySample(random(), difficulty), 0.6),
                 difficulty: difficulty,
                 monsters: getUniqueElementsFromArray(monsters, difficulty),

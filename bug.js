@@ -7,7 +7,6 @@ const StateEnum = {
 var state = StateEnum.Beginning;
 var showInfo = false;
 var showMap = false;
-var playSounds = true;
 
 var game = undefined;
 
@@ -72,8 +71,21 @@ async function drawStart() {
     ctx.drawImage(background, 0, 0);
     ctx.globalAlpha = 1;
     ctx.fillStyle = 'black';
-    ctx.font = "20px sans-serif";
-    ctx.fillText("Press any key to start...", 50, 50);
+    ctx.font = "40px Courier New";
+    var text = "Lucanus Cervus";
+    var text_start = 0.5 * canvas.clientWidth - ctx.measureText(text).width * 0.5
+    ctx.fillText(text, text_start, 100);
+    ctx.font = "30px Courier New";
+    var y_start = 200;
+    var y_spacing = 40;
+    var y_index = 0;
+    ctx.fillText("\u2190      Left", text_start, y_start + y_spacing * y_index++);
+    ctx.fillText("\u2191      Up", text_start, y_start + y_spacing * y_index++);
+    ctx.fillText("\u2192      Right", text_start, y_start + y_spacing * y_index++);
+    ctx.fillText("\u2193      Down", text_start, y_start + y_spacing * y_index++);
+    ctx.fillText("Space  Pass your turn", text_start, y_start + y_spacing * y_index++);
+    ctx.fillText("Alt    Show info about objects", text_start, y_start + y_spacing * y_index++);
+    ctx.fillText("M      Show map", text_start, y_start + y_spacing * y_index++);
     clearEffects();
     clearHud();
 }
@@ -122,6 +134,7 @@ function draw() {
 }
 
 function drawEnd() {
+    stopPlayingMusic();
     clearHud();
     game.end = new DeathEffect();
 }

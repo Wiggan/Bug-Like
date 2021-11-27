@@ -5,7 +5,7 @@ function drawHud() {
     ctx.fillStyle = "rgba(150, 120, 120, 0.8)";
     ctx.strokeStyle = "rgba(50, 20, 20, 0.7)";
     ctx.lineWidth = 10;
-    ctx.font = "20px sans-serif";
+    ctx.font = "16px Courier New";
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     ctx.fillRect(0, 0, canvas.clientWidth , canvas.clientHeight);
     ctx.strokeRect(0, 0, canvas.clientWidth, canvas.clientHeight);

@@ -12,12 +12,12 @@ class Object {
 
     drawInfoBox(ctx) {
         ctx.save();
-        ctx.fillStyle = "rgba(150, 120, 120, 0.7)";
-        ctx.strokeStyle = "rgba(50, 20, 20, 0.7)";
-        ctx.lineWidth = 10;
-        ctx.font = "20px sans-serif";
+        ctx.fillStyle = "rgba(150, 120, 120, 0.9)";
+        ctx.strokeStyle = "rgba(50, 20, 20, 0.9)";
+        ctx.lineWidth = 5;
+        ctx.font = "14px Courier New";
         var measure = ctx.measureText(this.description);
-        var padding = 20;
+        var padding = 12;
         ctx.translate(this.size / 2, this.size / 2);
         ctx.translate(-padding, -padding);
         ctx.translate(-measure.width / 2, 0);
@@ -103,17 +103,6 @@ class DMG extends Buff {
     }
 }
 
-class Initiative extends Buff {
-    constructor(room, x, y) {
-        super(initiative_sprite, x, y, '+1 initiative');
-    }
-    
-    pickUp() {
-        game.player.initiative++;
-        game.score += 10;
-    }
-}
-
 class Experience extends Buff {
     constructor(room, x, y) {
         super(experience_sprite, x, y, '+10 experience');
@@ -172,6 +161,40 @@ class Range extends Buff {
         game.score += 10;
     }
 }
+
+class Initiative extends Buff {
+    constructor(room, x, y) {
+        super(initiative_sprite, x, y, '+1 initiative');
+    }
+    
+    pickUp() {
+        game.player.initiative++;
+        game.score += 10;
+    }
+}
+
+class LevelUp extends Buff {
+    constructor(room, x, y) {
+        super(level_up_sprite, x, y, '+1 Level');
+    }
+    
+    pickUp() {
+        game.player.gainExperience(game.player.level_up_experience);
+        game.score += 10;
+    }
+}
+
+class LifeLine extends Buff {
+    constructor(room, x, y) {
+        super(life_line_sprite, x, y, 'Life line');
+    }
+    
+    pickUp() {
+        game.player.has_life_line = true;
+        game.score += 10;
+    }
+}
+
 
 
 

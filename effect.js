@@ -38,10 +38,10 @@ class DeathEffect {
                 this.ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
                 this.ctx.globalAlpha = 1;
                 this.ctx.fillStyle = "Crimson";
-                this.ctx.font = "40px sans-serif";
+                this.ctx.font = "40px Courier New";
                 var you_died = "You were killed by " + game.player.last_instigator.description;
                 this.ctx.fillText(you_died, 0.5 * canvas.clientWidth - this.ctx.measureText(you_died).width * 0.5, 0.5 * canvas.clientHeight - 50);
-                this.ctx.font = "20px sans-serif";
+                this.ctx.font = "20px Courier New";
                 var score = "Score: " + game.score;
                 this.ctx.fillText(score, 0.5 * canvas.clientWidth - this.ctx.measureText(score).width * 0.5, 0.5 * canvas.clientHeight);
                 state = StateEnum.End;
@@ -80,7 +80,7 @@ class LevelUpEffect {
                 this.ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
                 this.ctx.globalAlpha = 1;
                 this.ctx.fillStyle = "Black";
-                this.ctx.font = "40px sans-serif";
+                this.ctx.font = "40px Courier New";
                 var text = "Level Up!";
                 this.ctx.fillText(text, 0.5 * canvas.clientWidth - this.ctx.measureText(text).width * 0.5, 0.5 * canvas.clientHeight - 50);
             } else {

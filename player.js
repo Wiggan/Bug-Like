@@ -1,6 +1,6 @@
 class Player extends Actor {
     constructor() {
-        super(player_sprite, 4, 4, "You: Lucanus Cervus", 20000);
+        super(player_sprite, 4, 4, "You: Lucanus Cervus", 20);
         this.damage = 10;
         this.range = 1;
         this.pickupRange = 0;
@@ -10,7 +10,8 @@ class Player extends Actor {
         this.level_up_experience = this.getLevelUpExperience(this.level);
         this.previous_level_up_experience = 0;
         this.regen = 0;
-        this.canMoveRocks = false;
+        this.can_move_rocks = false;
+        this.has_life_line = false;
     }
     
     getLevelUpExperience(level) {
@@ -114,7 +115,7 @@ class Player extends Actor {
             this.y = target_y;
             update();
             draw();
-        } else if (this.canMoveRocks) {
+        } else if (this.can_move_rocks) {
             // If player owns buff move rocks
             var blockingObject = this.getBlockingObject(target_x, target_y, x, y)
             if (blockingObject != undefined) {
