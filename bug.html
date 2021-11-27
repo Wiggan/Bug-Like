@@ -38,6 +38,12 @@
          info: 18,
          map: 77
       };
+
+      var wait = false;
+      var forward = false;
+      var backward = false;
+      var left = false;
+      var right = false;
       draw();
       
       window.addEventListener('click', (e) => {
@@ -64,6 +70,26 @@
                showMap = true;
                e.preventDefault();
                draw();
+            } else if (e.keyCode == KeyEnum.forward && !forward) {
+               forward = true;
+               game.player.move(0, -1);
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.backward && !backward) {
+               backward = true;
+               game.player.move(0, 1);
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.left && !left) {
+               left = true;
+               game.player.move(-1, 0);
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.right && !right) {
+               right = true;
+               game.player.move(1, 0);
+               e.preventDefault();
+            } else if (e.keyCode == KeyEnum.wait && !wait) {
+               wait = true;
+               game.player.move(0, 0);
+               e.preventDefault();
             }
          }
       });
@@ -81,19 +107,19 @@
             });
          } else if (state == StateEnum.Running) {
             if (e.keyCode == KeyEnum.forward) {
-               game.player.move(0, -1);
+               forward = false;
                e.preventDefault();
             } else if (e.keyCode == KeyEnum.backward) {
-               game.player.move(0, 1);
+               backward = false;
                e.preventDefault();
             } else if (e.keyCode == KeyEnum.left) {
-               game.player.move(-1, 0);
+               left = false;
                e.preventDefault();
             } else if (e.keyCode == KeyEnum.right) {
-               game.player.move(1, 0);
+               right = false;
                e.preventDefault();
             } else if (e.keyCode == KeyEnum.wait) {
-               game.player.move(0, 0);
+               wait = false;
                e.preventDefault();
             }
          } else if (state == StateEnum.End) {

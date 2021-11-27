@@ -10,3 +10,4 @@ const width = room_width + window_margin;
 const height = room_height + window_margin;
 
 const player_max_range = 3;
+const rock_perimeter = 40;
