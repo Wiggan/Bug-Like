@@ -8,6 +8,7 @@ class Room {
         this.trail.width = room_width;
         this.trail.height = room_height;
         this.visited = false;
+        this.perimeter = false;
         game.rooms.forEach((room) => {
             this.connect(room);
         });
@@ -26,9 +27,13 @@ class Room {
         for (var x = 0; x < room_width_tiles; x++) {
             for (var y = 0; y < room_height_tiles; y++) {
                 // Should there be anything at all?
-                if (this.random() < this.biome.density) {
+                // Create a ring of rocks around the start position, so that move rocks must be found to progress.
+                var distanceFromOrigo = Math.round(Math.sqrt((this.x*room_width_tiles + x)**2 + (this.y*room_height_tiles + y)**2));
+                if (distanceFromOrigo == rock_perimeter) {
+                    obstacles.push(new Rock(this, x, y));
+                    this.perimeter = true;
+                } else if (this.random() < this.biome.density) {
                     // If so, let rocks dominate the perifery and concentrate monsters and buffs to the center
-                    //console.log("x: " + x + ", y: " + y + " relativeDistance: " + this.getRelativeDistanceToCenter(x, y));
                     var distance = this.getRelativeDistanceToCenter(x, y);
                     if (this.random()*0.4 + distance*0.6 > 0.5) {
                         obstacles.push(new Rock(this, x, y));
@@ -50,22 +55,24 @@ class Room {
             }
         }
         this.objects = [...obstacles, ...monsters, ...buffs];
-        // Ensure we almost always have a monster and a buff in each room
-        if (buffs.length == 0) {
-            var x = Math.floor(this.random()*room_width_tiles);
-            var y = Math.floor(this.random()*room_height_tiles);
-            this.clearArea(x, y, 1, 1);
-            this.objects.push(new (getRandomElement(this.biome.buffs))(this, x, y));
-        }
-        if (monsters.length == 0) {
-            var x = Math.floor(this.random()*room_width_tiles);
-            var y = Math.floor(this.random()*room_height_tiles);
-            this.clearArea(x, y, 1, 1);
-            this.objects.push(new (getRandomElement(this.biome.monsters))(this, x, y));
-        }
-        // Avoid putting this in first room!
-        if (creator != undefined &&  this.random() > 0.9) {
-            this.addPredefinedPattern();
+        if (!this.perimeter) {        
+            // Ensure we almost always have a monster and a buff in each room, but only if the room does not contain perimeter rocks.
+            if (buffs.length == 0) {
+                var x = Math.floor(this.random()*room_width_tiles);
+                var y = Math.floor(this.random()*room_height_tiles);
+                this.clearArea(x, y, 1, 1);
+                this.objects.push(new (getRandomElement(this.biome.buffs))(this, x, y));
+            }
+            if (monsters.length == 0) {
+                var x = Math.floor(this.random()*room_width_tiles);
+                var y = Math.floor(this.random()*room_height_tiles);
+                this.clearArea(x, y, 1, 1);
+                this.objects.push(new (getRandomElement(this.biome.monsters))(this, x, y));
+            }
+            // Avoid putting this in first room!
+            if (creator != undefined &&  this.random() > 0.9) {
+                this.addPredefinedPattern();
+            }
         }
     }
 

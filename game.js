@@ -9,7 +9,7 @@ class Game {
         this.score = 0;
         this.current_room = undefined;
         this.patterns = [
-            [[Rock, Rock, Rock], [Rock, MoveRocks, Mantis], [Rock, Rock, Rock]],  // Needs nothing
+            [[Rock, Rock, Rock, Rock], [Rock, MoveRocks, Mantis, null], [Rock, Rock, Rock, null]],  // Needs nothing
             [[null, Rock, null], [Rock, PickupRange, Rock], [null, Rock, null]], // Needs move rocks
             [[Rock, Rock, Rock], [Rock, Range, Rock], [Rock, Rock, Rock]],  // Needs pickup range and move rocks
             [[null, null, Rock, Rock, null], [null, Rock, Tic, Rock, Rock], [Rock, Tic, PickupRange, Tic, Rock], [Rock, Rock, Tic, Rock, null], [null, Rock, Rock, null, null]],  // Needs range and move rocks
