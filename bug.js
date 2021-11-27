@@ -9,6 +9,7 @@ var showInfo = false;
 var showMap = false;
 
 var game = undefined;
+var sounds = new Sound;
 
 // Configure canvas
 var canvas = document.getElementById('mycanvas');
@@ -38,6 +39,8 @@ async function generate() {
     pickup_range_sprite = await generatePattern(1080, tile_size, tile_size, 'Gold');
     move_rocks_sprite = await generatePattern(1081, tile_size, tile_size, 'Gold');
     initiative_sprite = await generateMirroredPattern(1090, tile_size, 'Gold');
+    level_up_sprite = await generateMirroredPattern(-758, tile_size, 'Gold');
+    life_line_sprite = await generateMirroredPattern(-763, tile_size, 'Gold');
 
     ants_sprite = await generateMirroredPattern(463, tile_size, tile_size, 'Black');
     spider_sprite = await generateMirroredPattern(101, tile_size, 'Black');
@@ -134,7 +137,7 @@ function draw() {
 }
 
 function drawEnd() {
-    stopPlayingMusic();
+    sounds.stopPlayingMusic();
     clearHud();
     game.end = new DeathEffect();
 }

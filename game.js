@@ -41,7 +41,7 @@ class Game {
             biomes.push({
                 color: getRandomColor(random, difficulty),
                 background: await generatePattern(random()*100, room_width, room_height, 'Black'),
-                music: getRandomElementWeighted(songs, random(), difficulty),
+                music: getRandomElementWeighted(sounds.songs, random(), difficulty),
                 density: clamp(0.04, getKumaraswamySample(random(), difficulty), 0.6),
                 difficulty: difficulty,
                 monsters: getUniqueElementsFromArray(monsters, difficulty),

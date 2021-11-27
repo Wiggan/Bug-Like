@@ -18,7 +18,7 @@ function drawHud() {
     ctx.fillStyle = "black";
     ctx.fillText(info, 10, 25);
 
-    if (playSounds) {
+    if (sounds.playSounds) {
         ctx.drawImage(sound_on_sprite, canvas.clientWidth - 45, 5);
     } else {
         ctx.drawImage(sound_off_sprite, canvas.clientWidth - 45, 5);

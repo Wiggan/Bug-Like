@@ -44,7 +44,11 @@
          if (state == StateEnum.Running) {
             var canvas = document.getElementById('hudcanvas'); 
             if (e.pageX > canvas.clientWidth - 50 && e.pageY < 50) {
-               playSounds = !playSounds;
+               if (sounds.playSounds) {
+                  sounds.mute();
+               } else {
+                  sounds.unmute();
+               }
                drawHud();
             }
          }
@@ -71,7 +75,7 @@
                game = new Game;
                await game.build();
                state = StateEnum.Running;
-               startPlayingMusic();
+               sounds.startPlayingMusic();
                update();
                draw();
             });
