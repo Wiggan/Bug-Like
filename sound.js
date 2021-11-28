@@ -4,6 +4,7 @@ class Sound {
         this.songs = [
             new Audio('sounds/Nice.ogg'),
             new Audio('sounds/Calm.ogg'),
+            new Audio('sounds/Tense.ogg'),
             new Audio('sounds/Scary.ogg')
         ];
         
