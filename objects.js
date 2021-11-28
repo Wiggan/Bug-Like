@@ -1,11 +1,12 @@
 
 
 class Object {
-    constructor(sprite, x, y, description) {
+    constructor(sprite, x, y, name, description) {
         this.x = x;
         this.y = y;
         this.blocking = true;
         this.size = tile_size;
+        this.name = name
         this.description = description;
         this.sprite = sprite;
     }
@@ -16,15 +17,18 @@ class Object {
         ctx.strokeStyle = "rgba(50, 20, 20, 0.9)";
         ctx.lineWidth = 5;
         ctx.font = "14px Courier New";
-        var measure = ctx.measureText(this.description);
+        var name_measure = ctx.measureText(this.name);
+        var description_measure = ctx.measureText(this.description);
+        var width = Math.max(name_measure.width, description_measure.width);
         var padding = 12;
         ctx.translate(this.size / 2, this.size / 2);
         ctx.translate(-padding, -padding);
-        ctx.translate(-measure.width / 2, 0);
-        ctx.fillRect(0, 0, measure.width + padding * 2, padding * 2);
-        ctx.strokeRect(0, 0, measure.width + padding * 2, padding * 2);
+        ctx.translate(-width / 2, 0);
+        ctx.fillRect(0, 0, width + padding * 2, 25 + padding * 2);
+        ctx.strokeRect(0, 0, width + padding * 2, 25 + padding * 2);
         ctx.fillStyle = "black";
-        ctx.fillText(this.description, padding, padding + 5);
+        ctx.fillText(this.name, padding, padding + 5);
+        ctx.fillText(this.description, padding, padding + 25);
         ctx.restore();
     }
 
@@ -48,21 +52,21 @@ class Object {
 
 class Rock extends Object {
     constructor(room, x, y) {
-        super(obstacle_sprite, x, y, 'Rock');
+        super(obstacle_sprite, x, y, 'Rock', 'Obstacle');
     }
 }
 
 
 class Buff extends Object {
-    constructor(sprite, x, y, description) {
-        super(sprite, x, y, description);
+    constructor(sprite, x, y, name, description) {
+        super(sprite, x, y, name, description);
         this.blocking = false;
     }
 }
 
 class HP extends Buff {
     constructor(room, x, y) {
-        super(hp_sprite, x, y, '+20 health');
+        super(hp_sprite, x, y, 'Sap', '+10 health');
     }
     
     pickUp() {
@@ -72,7 +76,7 @@ class HP extends Buff {
 
 class Regen extends Buff {
     constructor(room, x, y) {
-        super(hp_regen_sprite, x, y, '+1 health regeneration');
+        super(hp_regen_sprite, x, y, 'Wrinkled cherry', '+1 health regeneration');
     }
     
     pickUp() {
@@ -82,7 +86,7 @@ class Regen extends Buff {
 
 class MaxHP extends Buff {
     constructor(room, x, y) {
-        super(max_hp_sprite, x, y, '+1 max health');
+        super(max_hp_sprite, x, y, 'Decaying apple', '+1 max health');
     }
     
     pickUp() {
@@ -94,7 +98,7 @@ class MaxHP extends Buff {
 
 class DMG extends Buff {
     constructor(room, x, y) {
-        super(dmg_sprite, x, y, '+1 damage');
+        super(dmg_sprite, x, y, 'Whetstone pebble', '+1 damage');
     }
     
     pickUp() {
@@ -105,7 +109,7 @@ class DMG extends Buff {
 
 class Experience extends Buff {
     constructor(room, x, y) {
-        super(experience_sprite, x, y, '+10 experience');
+        super(experience_sprite, x, y, 'An insight', '+10 experience');
     }
     
     pickUp() {
@@ -116,7 +120,7 @@ class Experience extends Buff {
 
 class ExperienceBig extends Buff {
     constructor(room, x, y) {
-        super(experience_sprite, x, y, '+100 experience');
+        super(experience_sprite, x, y, 'A major insight', '+100 experience');
     }
     
     pickUp() {
@@ -125,11 +129,11 @@ class ExperienceBig extends Buff {
     }
 }
 
-var buffs = [HP, Experience, Regen, MaxHP, ExperienceBig, DMG];
+var buffs = [HP, Experience, Regen, DMG, MaxHP, ExperienceBig];
 
 class PickupRange extends Buff {
     constructor(room, x, y) {
-        super(pickup_range_sprite, x, y, '+1 pick up range!');
+        super(pickup_range_sprite, x, y, 'A growth spurt', '+1 pick up range!');
     }
     
     pickUp() {
@@ -140,7 +144,7 @@ class PickupRange extends Buff {
 
 class MoveRocks extends Buff {
     constructor(room, x, y) {
-        super(move_rocks_sprite, x, y, 'Lets you move rocks!');
+        super(move_rocks_sprite, x, y, 'A growth spurt', 'Lets you move rocks!');
     }
     
     pickUp() {
@@ -151,7 +155,7 @@ class MoveRocks extends Buff {
 
 class Range extends Buff {
     constructor(room, x, y) {
-        super(range_sprite, x, y, '+1 range');
+        super(range_sprite, x, y, 'A growth spurt', '+1 range');
     }
     
     pickUp() {
@@ -164,7 +168,7 @@ class Range extends Buff {
 
 class Initiative extends Buff {
     constructor(room, x, y) {
-        super(initiative_sprite, x, y, '+1 initiative');
+        super(initiative_sprite, x, y, 'A growth spurt', '+1 initiative');
     }
     
     pickUp() {
@@ -175,7 +179,7 @@ class Initiative extends Buff {
 
 class LevelUp extends Buff {
     constructor(room, x, y) {
-        super(level_up_sprite, x, y, '+1 Level');
+        super(level_up_sprite, x, y, 'A huge insight!', '+1 Level');
     }
     
     pickUp() {
@@ -186,7 +190,7 @@ class LevelUp extends Buff {
 
 class LifeLine extends Buff {
     constructor(room, x, y) {
-        super(life_line_sprite, x, y, 'Life line');
+        super(life_line_sprite, x, y, 'A larvae that looks just like you', 'Another chance if you die');
     }
     
     pickUp() {
@@ -199,8 +203,8 @@ class LifeLine extends Buff {
 
 
 class Actor extends Object {
-    constructor(sprite, x, y, description, max_health) {
-        super(sprite, x, y, description);
+    constructor(sprite, x, y, name, description, max_health) {
+        super(sprite, x, y, name, description);
         this.max_health = max_health;
         this.health = max_health;
         this.health_change = 0;
@@ -261,8 +265,8 @@ class Actor extends Object {
 }
 
 class Monster extends Actor {
-    constructor(room, sprite, x, y, description, max_health, aggro_range, speed, damage, initiative) {
-        super(sprite, x, y, description, max_health);
+    constructor(room, sprite, x, y, name, description, max_health, aggro_range, speed, damage, initiative) {
+        super(sprite, x, y, name, description, max_health);
         this.aggro_range = aggro_range;
         this.isAggro = false;
         this.range = 1;
@@ -336,49 +340,49 @@ class Monster extends Actor {
 
 class Ant extends Monster {
     constructor(room, x, y) {
-        super(room, ants_sprite, x, y, "Ant", 15, 2, 1, 5, 0);
+        super(room, ants_sprite, x, y, "Ant", "An easy target", 15, 2, 1, 5, 0);
     }
 }
 
 class Spider extends Monster {
     constructor(room, x, y) {
-        super(room, spider_sprite, x, y, "Spider", 40, 3, 2, 10, 1);
+        super(room, spider_sprite, x, y, "Spider", "Fast and dangerous to a young stag beetle", 40, 3, 2, 10, 1);
     }
 }
 
 class Centepede extends Monster {
     constructor(room, x, y) {
-        super(room, centepede_sprite, x, y, "Centepede", 30, 2, 2, 10, 1);
+        super(room, centepede_sprite, x, y, "Centepede", "Fast and threatful to a young stag beetle", 30, 2, 2, 10, 1);
     }
 }
 
 class Woodlouse extends Monster {
     constructor(room, x, y) {
-        super(room, woodlouse_sprite, x, y, "Woodlouse", 60, 1, 1, 5, 0);
+        super(room, woodlouse_sprite, x, y, "Woodlouse", "A threat to a young stag beetle", 60, 1, 1, 5, 0);
     }
 }
 
 class MayBug extends Monster {
     constructor(room, x, y) {
-        super(room, may_bug_sprite, x, y, "May Bug", 40, 2, 2, 10, 0);
+        super(room, may_bug_sprite, x, y, "May Bug", "A threat to a young stag beetle", 40, 2, 2, 10, 0);
     }
 }
 
 class Mantis extends Monster {
     constructor(room, x, y) {
-        super(room, mantis_sprite, x, y, "Mantis", 70, 5, 1, 50, 1);
+        super(room, mantis_sprite, x, y, "Mantis", "Dangerous!", 70, 5, 1, 50, 1);
     }
 }
 
 class Tic extends Monster {
     constructor(room, x, y) {
-        super(room, tic_sprite, x, y, "Tic", 30, 1, 0, 5, 0);
+        super(room, tic_sprite, x, y, "Tic", "Stationary, but hard to kill", 30, 1, 0, 5, 0);
     }
 }
 
 class Beetle extends Monster {
     constructor(room, x, y) {
-        super(room, beetle_sprite, x, y, "Beetle", 100, 3, 1, 10, 0);
+        super(room, beetle_sprite, x, y, "Beetle", "Hard shell, but not very dangerous", 100, 3, 1, 10, 0);
     }
 }
 
@@ -387,7 +391,7 @@ var monsters = [Ant, MayBug, Woodlouse, Tic, Spider, Centepede, Beetle, Mantis];
 
 class PoisonDartFrog extends Monster {
     constructor(room, x, y) {
-        super(room, poison_dart_frog_sprite, x, y, "Poison Dart Frog", 1, 8, 3, 99999, 1);
+        super(room, poison_dart_frog_sprite, x, y, "Poison Dart Frog", "Deadly to any stag beetle, but slow to attack", 1, 8, 3, 99999, 1);
         this.range = 2;
     }
 }

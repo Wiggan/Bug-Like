@@ -39,7 +39,7 @@ class DeathEffect {
                 this.ctx.globalAlpha = 1;
                 this.ctx.fillStyle = "Crimson";
                 this.ctx.font = "40px Courier New";
-                var you_died = "You were killed by " + game.player.last_instigator.description;
+                var you_died = "You were killed by " + game.player.last_instigator.name;
                 this.ctx.fillText(you_died, 0.5 * canvas.clientWidth - this.ctx.measureText(you_died).width * 0.5, 0.5 * canvas.clientHeight - 50);
                 this.ctx.font = "20px Courier New";
                 var score = "Score: " + game.score;

@@ -1,6 +1,6 @@
 class Player extends Actor {
     constructor() {
-        super(player_sprite, 4, 4, "You: Lucanus Cervus", 20);
+        super(player_sprite, 4, 4, "You", "Stag beetle", 20);
         this.damage = 10;
         this.range = 1;
         this.pickupRange = 0;
@@ -29,7 +29,6 @@ class Player extends Actor {
     gainExperience(amount) {
         this.experience += amount;
         if (this.experience >= this.level_up_experience) {
-            console.log("Level up!");
             this.level++;
             this.max_health += 10;
             this.damage += 5;

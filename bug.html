@@ -39,11 +39,12 @@
          map: 77
       };
 
-      var wait = false;
-      var forward = false;
-      var backward = false;
-      var left = false;
-      var right = false;
+      var wait = 0;
+      var forward = 0;
+      var backward = 0;
+      var left = 0;
+      var right = 0;
+      const cooldown = 100;
       draw();
       
       window.addEventListener('click', (e) => {
@@ -61,6 +62,7 @@
       });
       
       window.addEventListener('keydown', (e) => { 
+         var now = Date.now();
          if (state == StateEnum.Running) {
             if (e.keyCode == KeyEnum.info) {
                showInfo = true;
@@ -70,24 +72,24 @@
                showMap = true;
                e.preventDefault();
                draw();
-            } else if (e.keyCode == KeyEnum.forward && !forward) {
-               forward = true;
+            } else if (e.keyCode == KeyEnum.forward && now - forward > cooldown) {
+               forward = now;
                game.player.move(0, -1);
                e.preventDefault();
-            } else if (e.keyCode == KeyEnum.backward && !backward) {
-               backward = true;
+            } else if (e.keyCode == KeyEnum.backward && now - backward > cooldown) {
+               backward = now;
                game.player.move(0, 1);
                e.preventDefault();
-            } else if (e.keyCode == KeyEnum.left && !left) {
-               left = true;
+            } else if (e.keyCode == KeyEnum.left && now - left > cooldown) {
+               left = now;
                game.player.move(-1, 0);
                e.preventDefault();
-            } else if (e.keyCode == KeyEnum.right && !right) {
-               right = true;
+            } else if (e.keyCode == KeyEnum.right && now - right > cooldown) {
+               right = now;
                game.player.move(1, 0);
                e.preventDefault();
-            } else if (e.keyCode == KeyEnum.wait && !wait) {
-               wait = true;
+            } else if (e.keyCode == KeyEnum.wait && now - wait > cooldown) {
+               wait = now;
                game.player.move(0, 0);
                e.preventDefault();
             }

@@ -86,7 +86,7 @@ async function drawStart() {
     ctx.fillText("\u2191      Up", text_start, y_start + y_spacing * y_index++);
     ctx.fillText("\u2192      Right", text_start, y_start + y_spacing * y_index++);
     ctx.fillText("\u2193      Down", text_start, y_start + y_spacing * y_index++);
-    ctx.fillText("Space  Pass your turn", text_start, y_start + y_spacing * y_index++);
+    ctx.fillText("Space  Stand still", text_start, y_start + y_spacing * y_index++);
     ctx.fillText("Alt    Show info about objects", text_start, y_start + y_spacing * y_index++);
     ctx.fillText("M      Show map", text_start, y_start + y_spacing * y_index++);
     clearEffects();
@@ -102,7 +102,6 @@ function drawRunning() {
     ctx.save();
     ctx.translate(-(game.current_room.x + 0.5) * room_width, -(game.current_room.y + 0.5) * room_height);
 
-    game.current_room.draw(ctx);
     game.current_room.n.draw(ctx);
     game.current_room.ne.draw(ctx);
     game.current_room.e.draw(ctx);
@@ -111,6 +110,7 @@ function drawRunning() {
     game.current_room.sw.draw(ctx);
     game.current_room.w.draw(ctx);
     game.current_room.nw.draw(ctx);
+    game.current_room.draw(ctx);
     ctx.restore();
     ctx.save();
     ctx.translate(-0.5 * room_width, -0.5 * room_height);
