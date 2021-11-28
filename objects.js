@@ -199,6 +199,16 @@ class LifeLine extends Buff {
     }
 }
 
+class Score extends Buff {
+    constructor(room, x, y) {
+        super(life_line_sprite, x, y, 'Gold grain', '+1000 score');
+    }
+    
+    pickUp() {
+        game.score += 1000;
+    }
+}
+
 
 
 
@@ -386,12 +396,18 @@ class Beetle extends Monster {
     }
 }
 
+class MinotaurBeetle extends Monster {
+    constructor(room, x, y) {
+        super(room, minotaur_beetle_sprite, x, y, "Minotaur Beetle", "Deadly to any stag beetle", 200, 1, 1, 80, 1);
+        this.range = 2;
+    }
+}
 
-var monsters = [Ant, MayBug, Woodlouse, Tic, Spider, Centepede, Beetle, Mantis];
+var monsters = [Ant, MayBug, Woodlouse, Tic, Spider, Centepede, Beetle, Mantis, MinotaurBeetle];
 
 class PoisonDartFrog extends Monster {
     constructor(room, x, y) {
-        super(room, poison_dart_frog_sprite, x, y, "Poison Dart Frog", "Deadly to any stag beetle, but slow to attack", 1, 8, 3, 99999, 1);
+        super(room, poison_dart_frog_sprite, x, y, "Poison Dart Frog", "Deadly to any stag beetle, but slow to attack", 1, 0, 3, 99999, 1);
         this.range = 2;
     }
 }

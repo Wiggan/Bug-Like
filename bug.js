@@ -41,6 +41,7 @@ async function generate() {
     initiative_sprite = await generateMirroredPattern(1090, tile_size, 'Gold');
     level_up_sprite = await generateMirroredPattern(-758, tile_size, 'Gold');
     life_line_sprite = await generateMirroredPattern(-763, tile_size, 'Gold');
+    score_sprite = await generateDoubleMirroredPattern(12345, tile_size, 'Gold');
 
     ants_sprite = await generateMirroredPattern(463, tile_size, tile_size, 'Black');
     spider_sprite = await generateMirroredPattern(101, tile_size, 'Black');
@@ -89,6 +90,8 @@ async function drawStart() {
     ctx.fillText("Space  Stand still", text_start, y_start + y_spacing * y_index++);
     ctx.fillText("Alt    Show info about objects", text_start, y_start + y_spacing * y_index++);
     ctx.fillText("M      Show map", text_start, y_start + y_spacing * y_index++);
+    ctx.fillText("Turn based exploration game.", text_start, 20 + y_start + y_spacing * y_index++);
+    ctx.fillText("Find golden stuff", text_start, 20 + y_start + y_spacing * y_index++);
     clearEffects();
     clearHud();
 }

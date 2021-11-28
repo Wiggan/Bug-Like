@@ -17,6 +17,7 @@ class Game {
             [[Rock, Rock, null, Rock, Rock], [Rock, Rock, PoisonDartFrog, Rock, Rock], [null, PoisonDartFrog, LevelUp, PoisonDartFrog, null], [Rock, Rock, PoisonDartFrog, Rock, Rock], [Rock, Rock, null, Rock, Rock]],  // Needs initiative
             
         ];
+        this.score_pattern = [[Rock, MinotaurBeetle, Rock], [MinotaurBeetle, Score, MinotaurBeetle], [Rock, MinotaurBeetle, Rock]];
     }
     
     async build() {

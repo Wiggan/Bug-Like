@@ -97,19 +97,24 @@ class Room {
         });
     }
 
-    addPredefinedPattern() {
-        if (game.patterns.length > 0) {
-            var pattern = game.patterns.splice(0, 1)[0];
-            var x_start = Math.floor(this.random() * (room_width_tiles - pattern[0].length));
-            var y_start = Math.floor(this.random() * (room_height_tiles - pattern.length));
-            this.clearArea(x_start, y_start, pattern[0].length, pattern.length);
-            for (var y = 0; y <  pattern.length; y++) {
-                for (var x = 0; x < pattern[y].length; x++) {
-                    if (pattern[y][x] != null) {
-                        this.objects.push(new pattern[y][x](this, x_start + x, y_start + y));
-                    }
+    addPattern(pattern) {
+        var x_start = Math.floor(this.random() * (room_width_tiles - pattern[0].length));
+        var y_start = Math.floor(this.random() * (room_height_tiles - pattern.length));
+        this.clearArea(x_start, y_start, pattern[0].length, pattern.length);
+        for (var y = 0; y <  pattern.length; y++) {
+            for (var x = 0; x < pattern[y].length; x++) {
+                if (pattern[y][x] != null) {
+                    this.objects.push(new pattern[y][x](this, x_start + x, y_start + y));
                 }
             }
+        }
+    }
+
+    addPredefinedPattern() {
+        if (game.patterns.length > 0) {
+            this.addPattern(game.patterns.splice(0, 1)[0]);
+        } else if (this.random() > 0.1){
+            this.addPattern(game.score_pattern);
         }
     }
 
