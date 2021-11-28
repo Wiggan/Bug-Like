@@ -25,7 +25,8 @@ class Game {
         this.player = new Player();
         this.first_room = new Room(undefined, 0, 0);
 
-        this.first_room.clearArea(this.player.x, this.player.y, 3, 3);
+        console.log("Clearing area around player at: ")
+        this.first_room.clearArea(this.player.x - 1, this.player.y - 1, 3, 3);
         this.rooms.push(this.first_room);
         this.current_room = this.first_room;
         this.first_room.fill_surrounding();

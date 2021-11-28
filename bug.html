@@ -65,7 +65,6 @@
       window.addEventListener('click', (e) => {
          if (state == StateEnum.Running) {
             var canvas = document.getElementById('mycanvas'); 
-            console.log("x: " + e.pageX + ", y: " + e.pageY + ", clientHeight: " + canvas.clientHeight + ", clientWidth: " + canvas.clientWidth);
             if (e.pageX > canvas.clientWidth - 50 && e.pageY < 50) {
                if (sounds.playSounds) {
                   sounds.mute();
@@ -81,14 +80,19 @@
                draw();
             } else if (e.pageX < touch_area_size && e.pageY > touch_area_size && e.pageY < canvas.clientHeight - touch_area_size) {
                game.player.move(-1, 0);
+               e.preventDefault();
             } else if (e.pageX > canvas.clientWidth - touch_area_size && e.pageY > touch_area_size && e.pageY < canvas.clientHeight - touch_area_size) {
                game.player.move(1, 0);
+               e.preventDefault();
             } else if (e.pageX < canvas.clientWidth - touch_area_size && e.pageX > touch_area_size && e.pageY < touch_area_size) {
                game.player.move(0, -1);
+               e.preventDefault();
             } else if (e.pageX < canvas.clientWidth - touch_area_size && e.pageX > touch_area_size && e.pageY > canvas.clientHeight - touch_area_size) {
                game.player.move(0, 1);
+               e.preventDefault();
             } else if (touch_area_size < e.pageX && e.pageX < canvas.clientWidth - touch_area_size && touch_area_size < e.pageY && e.pageY < canvas.clientHeight - touch_area_size) {
                game.player.move(0, 0);
+               e.preventDefault();
             }
          } else if (state == StateEnum.Beginning) {
             generate().then(async () => {

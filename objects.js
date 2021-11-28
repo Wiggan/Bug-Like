@@ -294,10 +294,8 @@ class Monster extends Actor {
         // Check aggro
         if (this.distanceToPlayer() <= this.aggro_range) {
             this.isAggro = true;
-            console.log("Got aggro!");
         } else if (this.distanceToPlayer() > this.aggro_range + 1) {
             this.isAggro = false;
-            console.log("Lost aggro!");
         }
 
         // Move
