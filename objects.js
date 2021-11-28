@@ -82,23 +82,23 @@ class Regen extends Buff {
 
 class MaxHP extends Buff {
     constructor(room, x, y) {
-        super(max_hp_sprite, x, y, '+10 max health');
+        super(max_hp_sprite, x, y, '+1 max health');
     }
     
     pickUp() {
-        game.player.max_health += 10;
-        game.player.heal(10);
+        game.player.max_health++;
+        game.player.heal(1);
         game.score += 10;
     }
 }
 
 class DMG extends Buff {
     constructor(room, x, y) {
-        super(dmg_sprite, x, y, '+5 damage');
+        super(dmg_sprite, x, y, '+1 damage');
     }
     
     pickUp() {
-        game.player.damage += 5;
+        game.player.damage++;
         game.score += 10;
     }
 }
@@ -144,7 +144,7 @@ class MoveRocks extends Buff {
     }
     
     pickUp() {
-        game.player.canMoveRocks = true;
+        game.player.can_move_rocks = true;
         game.score += 100;
     }
 }

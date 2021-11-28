@@ -22,13 +22,13 @@ class Game {
     async build() {
         this.biomes = await this.generateBiomes(0);
         this.player = new Player();
-        var first_room = new Room(undefined, 0, 0);
+        this.first_room = new Room(undefined, 0, 0);
 
-        first_room.clearArea(this.player.x, this.player.y, 3, 3);
-        this.rooms.push(first_room);
-        this.current_room = first_room;
-        first_room.fill_surrounding();
-        first_room.visited = true;
+        this.first_room.clearArea(this.player.x, this.player.y, 3, 3);
+        this.rooms.push(this.first_room);
+        this.current_room = this.first_room;
+        this.first_room.fill_surrounding();
+        this.first_room.visited = true;
     } 
 
     async generateBiomes(seed) {

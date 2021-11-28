@@ -21,6 +21,7 @@ class Room {
         } else {
             this.biome = creator.biome;
         }
+        this.density = this.biome.density;
         var obstacles = [];
         var monsters = [];
         var buffs = [];
@@ -32,7 +33,9 @@ class Room {
                 if (distanceFromOrigo == rock_perimeter) {
                     obstacles.push(new Rock(this, x, y));
                     this.perimeter = true;
-                } else if (this.random() < this.biome.density) {
+                    // Ease up ont he density if on perimeter.
+                    this.density = this.biome.density * 0.5;
+                } else if (this.random() < this.density) {
                     // If so, let rocks dominate the perifery and concentrate monsters and buffs to the center
                     var distance = this.getRelativeDistanceToCenter(x, y);
                     if (this.random()*0.4 + distance*0.6 > 0.5) {
@@ -70,7 +73,7 @@ class Room {
                 this.objects.push(new (getRandomElement(this.biome.monsters))(this, x, y));
             }
             // Avoid putting this in first room!
-            if (creator != undefined &&  this.random() > 0.9) {
+            if (creator != undefined &&  this.random() > 0.7) {
                 this.addPredefinedPattern();
             }
         }

@@ -32,7 +32,7 @@ class Player extends Actor {
             console.log("Level up!");
             this.level++;
             this.max_health += 10;
-            this.damage += 10;
+            this.damage += 5;
             this.heal(this.max_health);
             this.previous_level_up_experience = this.level_up_experience;
             this.level_up_experience = this.getLevelUpExperience(this.level);
@@ -76,7 +76,14 @@ class Player extends Actor {
         });
 
         if (this.health <= 0) {
-            drawEnd();
+            if (this.has_life_line) {
+                this.has_life_line = false;
+                this.is_respawning = true;
+                new RespawnEffect;
+            } else {
+                console.log(new Error().stack);
+                drawEnd();
+            }
         } else {
             this.heal(this.regen);
         }
@@ -100,7 +107,7 @@ class Player extends Actor {
     
     move(x, y) {
         // Handle being dead
-        if (this.health <= 0) {
+        if (this.health <= 0 || this.is_respawning) {
             return;
         }
         // Handle wait
