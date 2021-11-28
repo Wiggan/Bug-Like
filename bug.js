@@ -52,6 +52,7 @@ async function generate() {
     tic_sprite = await generateMirroredPattern(535, tile_size, 'Black');
     beetle_sprite = await generateMirroredPattern(589, tile_size, 'Black');
     poison_dart_frog_sprite = await generateMirroredPattern(87, tile_size, 'Black');
+    minotaur_beetle_sprite = await generateMirroredPattern(-5, tile_size, 'Black');
 
     effect_sprites = [
         await generateDoubleMirroredPattern(15, effect_size, 'Crimson'),
@@ -91,7 +92,8 @@ async function drawStart() {
     ctx.fillText("Alt    Show info about objects", text_start, y_start + y_spacing * y_index++);
     ctx.fillText("M      Show map", text_start, y_start + y_spacing * y_index++);
     ctx.fillText("Turn based exploration game.", text_start, 20 + y_start + y_spacing * y_index++);
-    ctx.fillText("Find golden stuff", text_start, 20 + y_start + y_spacing * y_index++);
+    ctx.fillText("Find golden stuff.", text_start, 20 + y_start + y_spacing * y_index++);
+    ctx.fillText("Get tough.", text_start, 20 + y_start + y_spacing * y_index++);
     clearEffects();
     clearHud();
 }
@@ -140,6 +142,9 @@ function draw() {
 }
 
 function drawEnd() {
+    showInfo = false;
+    showMap = false;
+    drawRunning();
     sounds.stopPlayingMusic();
     clearHud();
     game.end = new DeathEffect();

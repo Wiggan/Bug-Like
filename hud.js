@@ -23,6 +23,10 @@ function drawHud() {
     } else {
         ctx.drawImage(sound_off_sprite, canvas.clientWidth - 45, 5);
     }
+    if (mobile) {
+        ctx.fillText("Info", canvas.clientWidth - 100, 25);
+        ctx.fillText("Map", canvas.clientWidth - 150, 25);
+    }
 }
 
 function clearHud() {
