@@ -397,7 +397,6 @@ class Beetle extends Monster {
 class MinotaurBeetle extends Monster {
     constructor(room, x, y) {
         super(room, minotaur_beetle_sprite, x, y, "Minotaur Beetle", "Deadly to any stag beetle", 160, 1, 1, 60, 0);
-        this.range = 2;
     }
 }
 
