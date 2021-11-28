@@ -83,7 +83,7 @@ class Player extends Actor {
                 console.log(new Error().stack);
                 drawEnd();
             }
-        } else {
+        } else if(this.health_change >= 0) {
             this.heal(this.regen);
         }
 
