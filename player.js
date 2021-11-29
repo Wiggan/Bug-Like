@@ -74,13 +74,15 @@ class Player extends Actor {
             return true;
         });
 
+        game.current_room.update();
+
         if (this.health <= 0) {
             if (this.has_life_line) {
                 this.has_life_line = false;
                 this.is_respawning = true;
                 new RespawnEffect;
             } else {
-                console.log(new Error().stack);
+                //console.log(new Error().stack);
                 drawEnd();
             }
         } else if(this.health_change >= 0) {

@@ -190,7 +190,7 @@ class LevelUp extends Buff {
 
 class LifeLine extends Buff {
     constructor(room, x, y) {
-        super(life_line_sprite, x, y, 'A larvae that looks just like you', 'Another chance if you die');
+        super(life_line_sprite, x, y, 'A larvae that looks just like you', 'Another chance if you die. You can only have one at a time.');
     }
     
     pickUp() {

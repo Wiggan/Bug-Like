@@ -113,7 +113,7 @@ class Room {
     addPredefinedPattern() {
         if (game.patterns.length > 0) {
             this.addPattern(game.patterns.splice(0, 1)[0]);
-        } else if (this.random() > 0.1){
+        } else if (this.random() > 0.7){
             this.addPattern(game.score_pattern);
         }
     }

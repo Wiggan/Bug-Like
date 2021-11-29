@@ -165,6 +165,6 @@ function getRoomRelativeCurrentRoom(x, y) {
 }
 
 function update() {
-    game.current_room.update();
+    
     game.player.update();
 }
