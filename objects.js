@@ -222,6 +222,7 @@ class Actor extends Object {
     }
 
     takeDamage(amount, instigator) {
+        console.log(this.name + " was hit for " + amount + " by " + instigator.name);
         this.last_instigator = instigator;
         amount = Math.min(amount, this.health);
         this.health -= amount;

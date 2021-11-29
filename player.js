@@ -113,6 +113,7 @@ class Player extends Actor {
         if (x == 0 && y == 0) {
             update();
             draw();
+            return;
         }
         var target_x =  this.x + x;
         var target_y =  this.y + y;
