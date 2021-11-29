@@ -336,7 +336,7 @@ class Monster extends Actor {
             this.takeDamage(game.player.damage, game.player);
             if (this.health <= 0) {
                 game.player.gainExperience(this.experience_value);
-                game.score += 10;
+                game.score += this.experience_value;
             }
         }
         if (this.initiative <= game.player.initiative) {
@@ -350,12 +350,14 @@ class Monster extends Actor {
 class Ant extends Monster {
     constructor(room, x, y) {
         super(room, ants_sprite, x, y, "Ant", "An easy target", 15, 2, 1, 5, 0);
+        this.experience_value = 10;
     }
 }
 
 class Spider extends Monster {
     constructor(room, x, y) {
         super(room, spider_sprite, x, y, "Spider", "Fast and dangerous to a young stag beetle", 40, 3, 2, 10, 1);
+        this.experience_value = 30;
     }
 }
 
@@ -380,24 +382,29 @@ class MayBug extends Monster {
 class Mantis extends Monster {
     constructor(room, x, y) {
         super(room, mantis_sprite, x, y, "Mantis", "Dangerous!", 70, 5, 1, 50, 1);
+        this.experience_value = 100;
     }
 }
 
 class Tic extends Monster {
     constructor(room, x, y) {
         super(room, tic_sprite, x, y, "Tic", "Stationary, but hard to kill", 30, 1, 0, 5, 0);
+        this.experience_value = 10;
     }
 }
 
 class Beetle extends Monster {
     constructor(room, x, y) {
         super(room, beetle_sprite, x, y, "Beetle", "Hard shell, but not very dangerous", 100, 3, 1, 10, 0);
+        this.experience_value = 30;
     }
 }
 
 class MinotaurBeetle extends Monster {
     constructor(room, x, y) {
-        super(room, minotaur_beetle_sprite, x, y, "Minotaur Beetle", "Deadly to any stag beetle", 160, 1, 1, 60, 0);
+        super(room, minotaur_beetle_sprite, x, y, "Minotaur Beetle", "Deadly to any stag beetle", 160, 1, 1, 60, 2);
+        this.range = 2;
+        this.experience_value = 200;
     }
 }
 
