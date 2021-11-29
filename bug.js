@@ -94,6 +94,7 @@ async function drawStart() {
     ctx.fillText("Turn based exploration game.", text_start, 20 + y_start + y_spacing * y_index++);
     ctx.fillText("Find golden stuff.", text_start, 20 + y_start + y_spacing * y_index++);
     ctx.fillText("Get tough.", text_start, 20 + y_start + y_spacing * y_index++);
+    ctx.fillText("Press any key to start...", text_start, 40 + y_start + y_spacing * y_index++);
     clearEffects();
     clearHud();
 }
@@ -165,6 +166,5 @@ function getRoomRelativeCurrentRoom(x, y) {
 }
 
 function update() {
-    
     game.player.update();
 }
